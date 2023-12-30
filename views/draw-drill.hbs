@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Draw Drill</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+        integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/konva@9.0.0/konva.min.js"></script>
+</head>
+
+
+<body id="draw">
+    <nav style="justify-content: space-between;" class="d-flex">
+        <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4>
+        <ul>
+
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/select-team">Teams</a></li>
+            <li><a href="/players">Players</a></li>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/drills">Drills</a></li>
+        </ul>
+        <ul>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <style>
+      .tooltipp {
+            position: relative;
+        }
+
+        .tooltiptext {
+            display: none;
+            color: #1977dc;
+            position: absolute;
+            background-color: white;
+            border-radius: 6px;
+            padding: 3px;
+            position: absolute;
+            z-index: 100;
+            border: 1px;
+            border-style: solid;
+            border-color: #1977dc;
+
+        }
+
+        .tooltipp:hover span.tooltiptext {
+            display: block;
+        }
+    </style>
+
+    <div class="container-fluid" style="display:flex; column-gap:5px; margin-top: 15px; margin-bottom: 15px;">
+        <section class="tools-board">
+            <div style="justify-content:center" class="row">
+                <label class="title tooltipp" style="color:black; font-size:22px;">Shapes 
+                  <i class="bi bi-question-circle-fill"></i>    
+                  <span class="tooltiptext">Single click to resize.
+                    <br> Click and hold to drag.
+                    <br> Double click to delete.
+                  </span>
+                </label>
+                <ul class="options">
+                    <li class="option tool" id="rectangle" style="font-size:18px">
+                        <span>Rectangle</span>
+                    </li>
+                    <li class="option tool" id="circle" style="font-size:18px">
+                        <span>Circle</span>
+                    </li>
+                    <li class="option tool" id="triangle" style="font-size:18px">
+                        <span>Triangle</span>
+                    </li>
+                    <li class="option tool" id="straightLine" style="font-size:18px">
+                        <span>Straight Line</span>
+                    </li>
+                    <li class="option tool" id="dashLine" style="font-size:18px">
+                        <span>Dashed Line</span>
+                    </li>
+                    <li class="option">
+                        <label for="fill-color" style="font-size:18px" data-bs-toggle="tooltip"
+                            data-bs-title="Fill Shape With Color" data-bs-placement="bottom">Fill Color</label>
+                        <input type="checkbox" id="fill-color" style="margin-left:15px">
+                    </li>
+                </ul>
+            </div>
+            <hr style="color:black">
+            </hr>
+            <div style="text-align: center;" class="row">
+                <label class="title tooltipp" style="color:black; font-size:22px">Options
+                  <i class="bi bi-question-circle-fill"></i>    
+                  <span class="tooltiptext">Type in text box then press "Text".
+                    <br> Single click to resize.
+                    <br> Double click to edit text.
+                    <br> Press 'Delete' key while editing to remove.
+                  </span>
+                </label>
+                <ul class="options" id="options">
+                    <li class="option tool" id="addtext" style="margin-top:10px">
+                        <span style="margin-right: 15px; font-size:18px" data-bs-toggle="tooltip"
+                            data-bs-title="Click&Drag On Canvas To Place Typed Text" data-bs-placement="top">Text</span>
+                        <input id="inputbox" type="text" style="width: 100px;">
+                    </li>
+                    <li class="option active tool" id="brush">
+                        <span style="font-size:18px">Brush</span>
+                    </li>
+                    <li class="option tool" id="eraser">
+                        <span style="font-size:18px">Eraser</span>
+                    </li>
+                    <li class="option tool">
+                        <span style="margin-right: 15px; margin-top:5px;font-size:18px" data-bs-toggle="tooltip"
+                            data-bs-title="Size of Brush/Eraser" data-bs-placement="bottom">Size</span>
+                        <input type="range" class="slider" id="size-slider" min="1" max="30" value="5"
+                            style="background: black;">
+                    </li>
+                </ul>
+            </div>
+            <hr style="color:black">
+            </hr>
+            <div class="row colors">
+                <label class="title" style="text-align: center; color:black; font-size:22px">Color Picker</label>
+                <input type="color" id="color-picker" value="#000000">
+            </div>
+            <hr style="color:black">
+            </hr>
+            <div class="row buttons">
+               <button class="btn btn-danger set-grid">Set Grid</button>
+      <button class="btn btn-danger set-diamond">Set Diamond</button>
+                <button class="btn btn-danger clear-canvas">Clear Canvas</button>
+            </div>
+            <hr style="color:black">
+            </hr>
+            <div class="row buttons" style="position: absolute; bottom:0; width:90%; margin-bottom:10px">
+                <button type="button" class="btn btn-success save-img">Save Image</button>
+            </div>
+        </section>
+        <div>
+        </div>
+        </section>
+        <div>
+        </div>
+        <section class="drawing-board" id="drawing-board" style="position: relative;"  >
+
+            <div id="container"></div>
+        </section>
+        <section class="tools-board" id="playerlist">
+            <!-- Your original playerlist content goes here -->
+            <div id="" class="">
+                <p style="text-align: center; color:black; font-size:22px">Players</p>
+                <hr style="color:black">
+                </hr>
+            </div>
+            {{#each players}}
+            <div id="{{this.P_Name}}{{this.Players_ID}}" class="ui-widget-content sort" draggable="true">
+                <p style="text-align: center; color:black; font-size:18px" draggable="true"   
+                    id="{{this.P_Name}}">{{this.P_Name}}</p>
+            </div>
+            {{/each}}
+
+        </section>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+  // Your entire JavaScript code goes here
+  const canvas = document.querySelector('#ctx'),
+  canvas_img = document.querySelector('#ctx_img'),
+  toolBtns = document.querySelectorAll(".tool"),
+  fillColor = document.querySelector("#fill-color"),
+  sizeSlider = document.querySelector("#size-slider"),
+  colorBtns = document.querySelectorAll(".colors .option"),
+  colorPicker = document.querySelector("#color-picker"),
+  setGrid = document.querySelector(".set-grid"),
+  setDiamond = document.querySelector(".set-diamond"),
+  clearCanvas = document.querySelector(".clear-canvas"),
+  saveImg = document.querySelector(".save-img");
+
+const playerNames = document.querySelectorAll('#playerlist p[draggable="true"]');
+
+playerNames.forEach(playerName => {
+  playerName.addEventListener('mousedown', (event) => {
+    const playerNameText = event.target.textContent;
+
+    if (playerNameText) {
+      // Store the player's name in a global variable for use in the stage mousemove event
+      window.draggedPlayerNameText = playerNameText;
+    }
+  });
+});
+
+// Helper function to add the player name back to the list
+  function addToPlayerList(playerName) {
+    const playerList = document.getElementById("playerlist");
+    const playerElement = document.createElement("p");
+    playerElement.textContent = playerName;
+    playerElement.style.textAlign = "center";
+    playerElement.style.color = "black";
+    playerElement.style.fontSize = "18px";
+    playerElement.classList.add("player-label");
+     playerElement.draggable = true;
+    playerList.appendChild(playerElement);
+
+    // Add the dragstart event listener
+    playerElement.addEventListener("dragstart", (event) => {
+      event.dataTransfer.setData("text/plain", playerName);
+      window.draggedPlayerNameText = playerName; // Store the dragged player name globally
+    });
+  }
+
+function editPlayerName(playerLabel) {
+  // Hide the player label
+  playerLabel.hide();
+
+  // Create the textarea
+  const textarea = document.createElement('textarea');
+  textarea.value = playerLabel.text();
+  const stage = playerLabel.getStage();
+  const textPosition = playerLabel.absolutePosition();
+  const areaPosition = {
+    x: stage.container().offsetLeft + textPosition.x,
+    y: stage.container().offsetTop + textPosition.y,
+  };
+
+  // Style the textarea
+  textarea.style.position = 'absolute';
+  textarea.style.left = areaPosition.x + 'px';
+  textarea.style.top = areaPosition.y + 'px';
+  textarea.style.width = playerLabel.width() + 'px';
+  textarea.style.height = playerLabel.height() + 'px';
+  textarea.style.fontSize = playerLabel.fontSize() + 'px';
+  textarea.style.fontFamily = playerLabel.fontFamily();
+  textarea.style.color = playerLabel.fill();
+
+  // Attach the textarea to the document body
+  document.body.appendChild(textarea);
+  textarea.focus();
+
+  
+
+   
+
+
+  function removeTextarea() {
+  if (textarea.parentNode) {
+    textarea.parentNode.removeChild(textarea);
+  }
+  playerLabel.show();
+}
+
+  
+  // Handle textarea resizing
+  textarea.addEventListener('input', function () {
+    textarea.style.width = 'auto';
+    textarea.style.height = 'auto';
+    textarea.style.width = textarea.scrollWidth + 'px';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
+
+  textarea.addEventListener('keydown', function (e) {
+    if (e.keyCode === 13 && !e.shiftKey) {
+      playerLabel.text(textarea.value);
+      removeTextarea();
+    }
+    if (e.keyCode === 27) {
+      removeTextarea();
+    }
+    if (e.keyCode === 46) { // Delete key pressed
+      addToPlayerList(playerLabel.text());
+      playerLabel.destroy();
+      removeTextarea();
+    }
+  });
+
+  function handleOutsideClick(e) {
+    if (e.target !== textarea) {
+      playerLabel.text(textarea.value);
+      removeTextarea();
+    }
+  }
+
+  setTimeout(() => {
+    window.addEventListener('click', handleOutsideClick);
+  });
+
+  
+}
+
+function transformPlayerName(playerLabel) {
+  const tr = new Konva.Transformer({
+    nodes: [playerLabel],
+    enabledAnchors: [
+      'top-left',
+      'top-right',
+      'bottom-left',
+      'bottom-right',
+    ],
+    resizeEnabled: true,
+    rotateEnabled: true,
+  });
+
+  drawlayer.add(tr);
+  drawlayer.draw();
+
+  // Remove the Transformer when the mouse is released
+  stage.on('mouseup touchend', function () {
+    tr.destroy();
+    drawlayer.draw();
+  });
+
+  // Add the dragstart event listener
+  playerLabel.on('dragstart', (event) => {
+    event.cancelBubble = true;
+  });
+
+  // Add the delete key event listener
+  window.addEventListener('keydown', function (e) {
+    if (e.keyCode === 46) { // Delete key pressed
+      if (playerLabel === tr.nodes()[0]) {
+        addToPlayerList(playerLabel.text());
+        playerLabel.destroy();
+        tr.destroy();
+        drawlayer.draw();
+      }
+    }
+  });
+}
+
+
+
+const drawingBoard = document.querySelector("#drawing-board");
+drawingBoard.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+
+function drop(event) {
+  event.preventDefault();
+  const playerName = event.dataTransfer.getData("text/plain");
+  const pos = stage.getPointerPosition();
+  const playerLabel = new Konva.Text({
+  x: pos.x,
+  y: pos.y,
+  text: window.draggedPlayerNameText,
+  fontSize: 18,
+  fontStyle: 'bold',
+  fill: '#000',
+  draggable: true,
+});
+
+drawlayer.add(playerLabel);
+drawlayer.draw();
+
+}
+
+// global variables with default value
+let prevMouseX, prevMouseY, snapshot,
+  isDrawing = false,
+  selectedTool = "brush",
+  brushWidth = 5,
+  selectedColor = colorPicker.value;
+
+
+var width = window.innerWidth;
+var height = window.innerHeight - 25;
+
+
+var stage = new Konva.Stage({
+  container: 'container',
+  width: width,
+  height: height,
+});
+
+var bglayer = new Konva.Layer();
+stage.add(bglayer);
+
+/* var bgimg = new Konva.Image({
+  x: stage.height(),
+  y: stage.height(),
+  
+});
+bglayer.add(bgimg);  
+bgimg.src = 'https://i.imgur.com/fSvmBa1.png'; */
+
+
+/* var drawlayer = new Konva.Layer();
+stage.add(drawlayer); */
+
+var drawlayer = new Konva.Layer();
+stage.add(drawlayer);
+
+clearCanvas.addEventListener("click", () => {
+  /* 	drawlayer.destroy(); */
+  drawlayer.destroy();
+  /*   stage.add(drawlayer); */
+  stage.add(drawlayer);
+  gridbgimg.remove();
+  diamondbgimg.remove();
+})
+
+var diamondimg = new Image();
+diamondimg.src = 'https://i.imgur.com/fSvmBa1.png';
+diamondimg.crossOrigin = '';
+var diamondbgimg = new Konva.Image({
+  width: stage.container().offsetWidth ,
+  height: stage.container().offsetHeight - 120,
+  x: 0,
+  y: 0,
+  image: diamondimg,
+  crossOrigin: 'Anonymous',
+});
+
+
+var gridimg = new Image();
+gridimg.src = 'https://i.imgur.com/ZHOFr6xl.jpg';
+gridimg.crossOrigin = '';
+var gridbgimg = new Konva.Image({
+  width: stage.container().offsetWidth,
+  height: stage.container().offsetHeight - 120,
+  x: 0,
+  y: 0,
+  image: gridimg,
+  crossOrigin: 'Anonymous',
+});
+
+setDiamond.addEventListener("click", () => {
+  /* Konva.Image.fromURL('https://i.imgur.com/fSvmBa1.png', (image) => {
+    bglayer.add(image); */
+  gridbgimg.remove();
+  bglayer.add(diamondbgimg);
+});
+setGrid.addEventListener("click", () => {
+  /* Konva.Image.fromURL('https://i.imgur.com/fSvmBa1.png', (image) => {
+    bglayer.add(image); */
+  diamondbgimg.remove();
+  bglayer.add(gridbgimg);
+});
+
+var drawlayer = new Konva.Layer();
+stage.add(drawlayer);
+
+clearCanvas.addEventListener("click", ()=>{
+	drawlayer.destroy();
+  drawlayer.destroy();
+  stage.add(drawlayer);
+  stage.add(drawlayer);
+})
+
+
+
+toolBtns.forEach(btn => {
+  btn.addEventListener("click", () => { // adding click event to all tool option
+    // removing active class from the previous option and adding on current clicked option
+    if (btn.id === '') {
+      return
+    } 
+    //If selected tool is rectangle
+    else if (btn.id === 'rectangle') {
+			let Box;
+      if (fillColor.checked){
+      Box = new Konva.Rect({
+        x: 30 + 50,
+        y: 18 + 40,
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        width: 100,
+        height: 50,
+        clickBool: false
+      });
+      }
+      else{
+      Box = new Konva.Rect({
+        x: 30 + 50,
+        y: 18 + 40,
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        width: 100,
+        height: 50,
+        clickBool: false
+      });
+      }
+      Box.on('dblclick dbltap', function() {
+      this.destroy();
+      var tr = drawlayer.find('Transformer')[0];
+      tr.destroy();
+      });
+      
+      Box.on('dragstart', function(){
+        selectedTool = '';
+      })
+
+      Box.on('click tap', function(){
+        selectedTool = '';
+      	if(this.clickBool===false){
+        	this.clickBool=true; 
+        }
+        else{
+        	this.clickBool=false;
+        }
+        
+        if (this.clickBool){
+        	var tr = new Konva.Transformer({
+          	nodes: [Box],
+            enabledAnchors: ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
+          });
+     			drawlayer.add(tr);
+       		   
+        }
+        if(!this.clickBool){
+        	var tr = drawlayer.find('Transformer')[0];
+          tr.destroy();
+        }
+        
+      })
+      drawlayer.add(Box);
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = 'rectangle';
+      console.log(selectedTool);
+    } 
+    //If selected tool is Circle:
+    else if (btn.id === 'circle') {
+			let ball;
+      if (fillColor.checked){
+      ball = new Konva.Circle({
+        x: 30 + 50,
+        y: 18 + 40,
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        radius:75,        
+        width: 75,
+        height: 75,
+        clickBool: false
+      });
+      }
+      else{
+      ball = new Konva.Circle({
+        x: 30 + 50,
+        y: 18 + 40,
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        radius:75,
+        width: 75,
+        height: 75,
+        clickBool: false
+      });
+      }
+      ball.on('dblclick dbltap', function() {
+      this.destroy();
+      var tr = drawlayer.find('Transformer')[0];
+      tr.destroy();
+        
+      });
+
+      ball.on('dragstart', function(){
+        selectedTool = '';
+      });
+
+      ball.on('click tap', function(){
+      
+      	if(this.clickBool===false){
+        	this.clickBool=true; 
+        }
+        else{
+        	this.clickBool=false;
+        }
+        
+        if (this.clickBool){
+        	var tr = new Konva.Transformer({
+          	nodes: [ball],
+            enabledAnchors: ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
+          });
+     			drawlayer.add(tr);
+       		   
+        }
+        if(!this.clickBool){
+        	var tr = drawlayer.find('Transformer')[0];
+          tr.destroy();
+        }
+        
+      })
+      drawlayer.add(ball);
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = 'circle';
+      console.log(selectedTool);
+    }
+    //If selected tool is triangle
+    else if (btn.id === 'triangle') {
+			let pyramid;
+      if (fillColor.checked){
+      pyramid = new Konva.RegularPolygon({
+        x: 30 + 50,
+        y: 18 + 40,
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        sides:3,        
+        width: 75,
+        height: 75,
+        clickBool: false
+      });
+      }
+      else{
+      pyramid = new Konva.RegularPolygon({
+        x: 30 + 50,
+        y: 18 + 40,
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        sides:3,
+        width: 75,
+        height: 75,
+        clickBool: false
+      });
+      }
+      pyramid.on('dblclick dbltap', function() {
+      this.destroy();
+      var tr = drawlayer.find('Transformer')[0];
+      tr.destroy();
+        
+      pyramid.on('dragstart', function(){
+        selectedTool = '';
+      });
+
+      });
+      pyramid.on('click tap', function(){
+      
+      	if(this.clickBool===false){
+        	this.clickBool=true; 
+        }
+        else{
+        	this.clickBool=false;
+        }
+        
+        if (this.clickBool){
+        	var tr = new Konva.Transformer({
+          	nodes: [pyramid],
+            enabledAnchors: ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
+          });
+     			drawlayer.add(tr);
+       		   
+        }
+        if(!this.clickBool){
+        	var tr = drawlayer.find('Transformer')[0];
+          tr.destroy();
+        }
+        
+      })
+      drawlayer.add(pyramid);
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = 'triangle';
+      console.log(selectedTool);
+    }
+    //If selected tool is text:
+else if (btn.id === 'addtext') {
+	var text = document.getElementById("inputbox");
+      var textbox = new Konva.Text({
+      	text: text.value,
+        x: 30 + 50,
+        y: 18 + 40,
+        draggable: true,
+        fontSize:20,
+        clickBool: false
+      });
+
+      
+      textbox.on('dragstart', function(){
+        selectedTool = '';
+      });
+
+      textbox.on('dblclick dbltap', function() {
+
+        var tr = drawlayer.find('Transformer')[0];
+        tr.destroy();
+
+        textbox.hide();
+
+        var textPosition = textbox.absolutePosition();
+        var stagepos = document.getElementById('drawing-board');
+        
+        // so position of textarea will be the sum of positions above:
+        var areaPosition = {
+          x: stagepos.offsetLeft + textPosition.x,
+    			y: stagepos.offsetTop + textPosition.y,
+        };
+               
+        console.log(stage.container());
+        // create textarea and style it
+        var textarea = document.createElement('textarea');
+        document.body.appendChild(textarea);
+
+        // apply many styles to match text on canvas as close as possible
+        // remember that text rendering on canvas and on the textarea can be different
+        // and sometimes it is hard to make it 100% the same. But we will try...
+        textarea.value = textbox.text();
+        textarea.style.position = 'absolute';
+        textarea.style.top = areaPosition.y + 'px';
+        textarea.style.left = areaPosition.x + 'px';
+        textarea.style.width = textbox.width() - textbox.padding() * 2 + 'px';
+        textarea.style.height =
+          textbox.height() - textbox.padding() * 2 + 5 + 'px';
+        textarea.style.fontSize = textbox.fontSize() + 'px';
+        textarea.style.border = 'none';
+        textarea.style.padding = '0px';
+        textarea.style.margin = '0px';
+        textarea.style.overflow = 'hidden';
+        textarea.style.background = 'none';
+        textarea.style.outline = 'none';
+        textarea.style.resize = 'none';
+        textarea.style.lineHeight = textbox.lineHeight();
+        textarea.style.fontFamily = textbox.fontFamily();
+        textarea.style.transformOrigin = 'left top';
+        textarea.style.textAlign = textbox.align();
+        textarea.style.color = textbox.fill();
+        rotation = textbox.rotation();
+        var transform = '';
+        if (rotation) {
+          transform += 'rotateZ(' + rotation + 'deg)';
+        }
+
+        var px = 0;
+        // also we need to slightly move textarea on firefox
+        // because it jumps a bit
+        var isFirefox =
+            navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+        if (isFirefox) {
+          px += 2 + Math.round(textbox.fontSize() / 20);
+        }
+        transform += 'translateY(-' + px + 'px)';
+
+        textarea.style.transform = transform;
+
+        // reset height
+        textarea.style.height = 'auto';
+        // after browsers resized it we can set actual value
+        textarea.style.height = textarea.scrollHeight + 3 + 'px';
+
+        textarea.focus();
+
+        function removeTextarea() {
+          textarea.parentNode.removeChild(textarea);
+          window.removeEventListener('click', handleOutsideClick);
+          textbox.show();
+          tr.show();
+          //tr.forceUpdate();
+        }
+
+        function setTextareaWidth(newWidth) {
+          if (!newWidth) {
+            // set width for placeholder
+            newWidth = textbox.placeholder.length * textbox.fontSize();
+          }
+          // some extra fixes on different browsers
+          var isSafari = /^((?!chrome|android).)*safari/i.test(
+            navigator.userAgent
+          );
+          var isFirefox =
+            navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+          if (isSafari || isFirefox) {
+            newWidth = Math.ceil(newWidth);
+          }
+
+          var isEdge =
+            document.documentMode || /Edge/.test(navigator.userAgent);
+          if (isEdge) {
+            newWidth += 1;
+          }
+          textarea.style.width = newWidth + 'px';
+        }
+
+        textarea.addEventListener('keydown', function(e) {
+          // hide on enter
+          // but don't hide on shift + enter
+          if (e.keyCode === 13 && !e.shiftKey) {
+            textbox.text(textarea.value);
+            removeTextarea();
+          }
+          // on esc do not set value back to node
+          if (e.keyCode === 27) {
+            removeTextarea();
+          }
+          //on 'delete' key, delete (not backspace)
+          if (e.keyCode === 46) {
+            textarea.remove();
+          }
+
+        });
+
+        textarea.addEventListener('keydown', function(e) {
+          scale = textbox.getAbsoluteScale().x;
+          setTextareaWidth(textbox.width() * scale);
+          textarea.style.height = 'auto';
+          textarea.style.height =
+            textarea.scrollHeight + textbox.fontSize() + 'px';
+        });
+
+        function handleOutsideClick(e) {
+          if (e.target !== textarea) {
+            textbox.text(textarea.value);
+            removeTextarea();
+          }
+        }
+        setTimeout(() => {
+          window.addEventListener('click', handleOutsideClick);
+        });
+
+      });
+
+
+      textbox.addEventListener('keydown', function(e) {
+
+        if (e.keyCode === 46) {
+          textbox.destroy();
+        }
+        /* this.destroy();
+        var tr = drawlayer.find('Transformer')[0];
+        tr.destroy(); */
+
+      });
+      
+      textbox.on('click tap', function(){
+      
+      	if(this.clickBool===false){
+        	this.clickBool=true; 
+        }
+        else{
+        	this.clickBool=false;
+        }
+        
+        if (this.clickBool){
+        	var tr = new Konva.Transformer({
+          	nodes: [textbox],
+            enabledAnchors: ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
+          });
+     			drawlayer.add(tr);
+          /* tr.nodes([box]); */
+       		   
+        }
+        if(!this.clickBool){
+        	var tr = drawlayer.find('Transformer')[0];
+          tr.destroy();
+        }
+        
+      })
+      drawlayer.add(textbox);
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = 'addtext';
+      console.log(selectedTool);
+    }
+    //If straight line selected tool:
+    else if (btn.id === 'straightLine') {
+			let line;
+      if (fillColor.checked){
+      line = new Konva.Line({
+        points: [0, 0, 100, 100],
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        clickBool: false,
+        lineCap: 'round',
+        lineJoin: 'round'
+      });
+      }
+      else{
+      line = new Konva.Line({
+       points: [0, 0, 100, 100],
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        clickBool: false,
+        lineCap: 'round',
+        lineJoin: 'round'
+      });
+      }
+      line.on('dblclick dbltap', function() {
+      this.destroy();
+      var tr = drawlayer.find('Transformer')[0];
+      tr.destroy();
+        
+      });
+
+      line.on('dragstart', function(){
+        selectedTool = '';
+      });
+
+      line.on('click tap', function(){
+      
+      	if(this.clickBool===false){
+        	this.clickBool=true; 
+        }
+        else{
+        	this.clickBool=false;
+        }
+        
+        if (this.clickBool){
+        	var tr = new Konva.Transformer({
+          	nodes: [line],
+            enabledAnchors: ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
+          });
+     			drawlayer.add(tr);
+       		   
+        }
+        if(!this.clickBool){
+        	var tr = drawlayer.find('Transformer')[0];
+          tr.destroy();
+        }
+        
+      })
+      drawlayer.add(line);
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = 'straightLine';
+      console.log(selectedTool);
+    }
+//if dashed line selected tool
+    else if (btn.id === 'dashLine') {
+			let dashLine;
+      if (fillColor.checked){
+      dashLine = new Konva.Line({
+         points: [0, 0, 100, 100],
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        clickBool: false,
+        lineCap: 'round',
+        lineJoin: 'round',
+        dash: [20, 10]
+      });
+      }
+      else{
+      dashLine = new Konva.Line({
+       points: [0, 0, 100, 100],
+        stroke: selectedColor,
+        strokeWidth: brushWidth,
+        draggable: true,
+        fill: selectedColor,
+        clickBool: false,
+        lineCap: 'round',
+        lineJoin: 'round',
+        dash: [10, 5]
+      });
+      }
+      dashLine.on('dblclick dbltap', function() {
+      this.destroy();
+      var tr = drawlayer.find('Transformer')[0];
+      tr.destroy();
+        
+      });
+
+      dashLine.on('dragstart', function(){
+        selectedTool = '';
+      });
+
+      dashLine.on('click tap', function(){
+      
+      	if(this.clickBool===false){
+        	this.clickBool=true; 
+        }
+        else{
+        	this.clickBool=false;
+        }
+        
+        if (this.clickBool){
+        	var tr = new Konva.Transformer({
+          	nodes: [line],
+            enabledAnchors: ['top-left', 'top-center', 'top-right', 'middle-right', 'middle-left', 'bottom-left', 'bottom-center', 'bottom-right']
+          });
+     			drawlayer.add(tr);
+       		   
+        }
+        if(!this.clickBool){
+        	var tr = drawlayer.find('Transformer')[0];
+          tr.destroy();
+        }
+        
+      })
+      drawlayer.add(dashLine);
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = 'dashLine';
+      console.log(selectedTool);
+    }
+    else {
+      document.querySelector(".options .active").classList.remove("active");
+      btn.classList.add("active");
+      selectedTool = btn.id;
+      console.log(selectedTool);
+    }
+  });
+});
+
+
+sizeSlider.addEventListener("change", () => brushWidth = sizeSlider.value); // passing slider value as brushSize
+colorBtns.forEach(btn => {
+  btn.addEventListener("click", () => { // adding click event to all color button
+    // removing selected class from the previous option and adding on current clicked option
+    document.querySelector(".options .selected").classList.remove("selected");
+    btn.classList.add("selected");
+    // passing selected btn background color as selectedColor value
+    selectedColor = window.getComputedStyle(btn).getPropertyValue("background-color");
+  });
+});
+colorPicker.addEventListener("change", () => {
+  // passing picked color value from color picker to last color btn background
+  selectedColor = colorPicker.value;
+});
+
+saveImg.addEventListener("click", () => {
+    const link = document.createElement("a"); // creating <a> element
+    link.download = `${Date.now()}.jpg`; // passing current date as link download value
+    //link.href = canvas.toDataURL(); // passing canvasData as link href value
+    //link.click(); // clicking link to download image
+
+    //var save_canvas = document.querySelector('#save_canvas')
+    //var save_context = save_canvas.getContext('2d')
+
+    //save_canvas.width = canvas.clientWidth;
+    //save_canvas.height = canvas.clientHeight;
+
+    //save_context.drawImage(canvas_img, 0, 0, canvas.width, canvas.height)
+    //save_context.drawImage(canvas, 0, 0, canvas.width, canvas.height)
+
+    var piclink = stage.toDataURL();
+    var current_url = window.location.href
+
+    var team_id = current_url.split("/")[4]
+
+    var drill_id = current_url.split("/")[5]
+    localStorage.setItem(`pic${drill_id}`, piclink);
+
+    //var current_url = window.location.href
+    current_url = current_url.replace(`draw-drill/${team_id}/${drill_id}`, `practice/${team_id}`)
+    window.location.assign(current_url)
+});
+
+
+var isPaint = false;
+var mode = 'brush';
+let lastLine;
+
+stage.on('mousedown touchstart', function(e) {
+  isPaint = true;
+
+  var pos = stage.getPointerPosition();
+  console.log(selectedTool);
+  if (selectedTool === 'brush') {
+    selectedTool = 'source-over';
+  }
+  else if (selectedTool === 'eraser') {
+    selectedTool = 'destination-out';
+  }
+  else if((selectedTool === 'source-over')||(selectedTool === 'destination-out')){
+  isPaint=true;
+  }
+  else{
+  isPaint = false;
+  }
+  
+  
+  
+  if ((selectedTool === 'destination-out') || (selectedTool === 'source-over')) {
+    lastLine = new Konva.Line({
+      stroke: selectedColor,
+      strokeWidth: brushWidth,
+      globalCompositeOperation: selectedTool,
+      // round cap for smoother lines
+      lineCap: 'round',
+      lineJoin: 'round',
+      // add point twice, so we have some drawings even on a simple click
+      points: [pos.x, pos.y, pos.x, pos.y],
+    });
+    drawlayer.add(lastLine);
+  }
+
+
+});
+
+stage.on('mouseup touchend', function () {
+  isPaint = false;
+
+  // Clear the draggedPlayerNameText global variable on mouseup
+  window.draggedPlayerNameText = null;
+});
+
+
+stage.on('mousemove touchmove', function (e) {
+  if (!isPaint) {
+    if (window.draggedPlayerNameText) {
+      const pos = stage.getPointerPosition();
+      const playerLabel = new Konva.Text({
+        x: pos.x,
+        y: pos.y,
+        text: window.draggedPlayerNameText,
+        fontSize: 18,
+        fontStyle: 'bold',
+        fill: '#000',
+        draggable: true,
+      });
+      playerLabel.on('click', () => {
+          transformPlayerName(playerLabel);
+      });
+      playerLabel.on('dblclick', () => {
+          editPlayerName(playerLabel);
+        });
+      drawlayer.add(playerLabel);
+      drawlayer.draw();
+
+      const playerElements = Array.from(document.querySelectorAll("#playerlist p"));
+const playerElement = playerElements.find((element) => element.textContent === window.draggedPlayerNameText);
+if (playerElement) {
+  playerElement.remove();
+}
+
+
+      // Clear the draggedPlayerNameText global variable after adding the player label
+      window.draggedPlayerNameText = null;
+    }
+    return;
+  }
+  const pos = stage.getPointerPosition();
+  var newPoints = lastLine.points().concat([pos.x, pos.y]);
+  lastLine.points(newPoints);
+});
+});
+
+
+
+
+</script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+</body>
+
+
+</html>

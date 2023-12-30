@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>View Drills</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav style="justify-content: space-between;" class="d-flex">
+        <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4>
+        <ul>
+
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/select-team">Teams</a></li>
+            <li><a href="/players">Players</a></li>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/drills">Drills</a></li>
+        </ul>
+        <ul>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="row">
+        <div class="col-6">
+            <h1>{{team_name}}'s drills</h1>
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <button style="margin-right: 5%;" class="btn btn-primary align-self-center" onclick="goToAddDrill()">+ Add
+                Drill</a>
+        </div>
+    </div>
+
+
+
+
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Drill Name</th>
+                <th scope="col">Drill Category</th>
+                <th scope="col">Drill Type</th>
+                <th scope="col" class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{#each rows}}
+            <tr>
+                <th scope="row">{{this.Drill_ID}}</th>
+                <td>{{this.Dr_Name}}</td>
+                <td>{{this.Dr_Category}}</td>
+                <td>{{this.Dr_Type}}</td>
+                <td class="text-end">
+                    <a href="../team/editDrill/{{this.Drill_ID}}/{{this.Team_ID}}" type="button"
+                        class="btn btn-light btn-small"><i class="bi bi-pencil"></i>
+                        Edit</a>
+                    <a href="../team/deleteDrill/{{this.Drill_ID}}/{{this.Team_ID}}" type="button"
+                        class="btn btn-light btn-small"><i class="bi bi-person-x"></i> Delete</a>
+                </td>
+            </tr>
+            {{/each}}
+
+        </tbody>
+    </table>
+
+
+
+
+
+    <script>
+
+        function goToAddDrill() {
+            var current_url = window.location.href
+            var team_id = current_url.split("/")[4]
+            console.log(team_id)
+            window.location.assign(current_url.split("/")[0] + "/team/addDrillForm/" + team_id)
+        }
+
+    </script>
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+</body>
+
+</html>

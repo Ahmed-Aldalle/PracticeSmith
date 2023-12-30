@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Login Page</title>
+</head>
+
+<body>
+
+    <nav style="justify-content: space-between;" class="d-flex"> class=" sticky-top">
+        <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4>
+        <ul>
+
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+
+        </ul>
+
+
+    </nav>
+
+
+
+    {{#each userEmails}}
+    <input type="hidden" id="arrIndex" name="array[]" value="{{this}}" />
+    {{/each}}
+
+
+    <section class="h-100" style="">
+        <div class="container-fluid py-2 h-100 mb-5">
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-xl-12">
+                    <div class="h-100 card rounded-3 text-black" style="">
+                        <div class="row g-0">
+                            <div class="h-100 col-lg-5">
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <div class="text-center">
+
+                                        <img src="https://i.ibb.co/6Rfdbx2/baseball-gc4d32d03e-1280.png"
+                                            style="width: 185px; margin-bottom:20px;" alt="logo">
+
+                                    </div>
+
+                                    {{#if email}}
+                                    <input type="hidden" id="emailHidden" value="{{email}}" />
+                                    {{/if}}
+
+                                    {{#if password}}
+                                    <input type="hidden" id="passwordHidden" value="{{password}}" />
+                                    {{/if}}
+
+                                    <form action="/auth/login" method="POST" id="loginForm">
+                                        <p>Please login to your account.</p>
+                                        {{#if message }}
+                                        <p id="messageField" style="color: rgb(217, 23, 23);">{{message}}</p>
+
+
+                                        {{/if}}
+
+
+
+                                        <div class="form-outline mb-4">
+                                            <input type="email" id="email" name="email" class="form-control"
+                                                placeholder="Enter email address" required />
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <input type="password" id="password" name="password" class="form-control"
+                                                placeholder="Enter password" required />
+
+                                        </div>
+
+                                        <div class="text-center pt-1  mb-4 pb-1">
+
+                                            <button type="submit" class="btn btn-outline-primary" style="width:50%">Log
+                                                In</button>
+                                            <div class="row">
+                                                <a class="text-muted" data-bs-toggle="modal"
+                                                    data-bs-target="#forgotPassword">Forgot password?</a>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-center pb-4">
+                                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a
+                                                    data-bs-toggle="modal" data-bs-target="#registerNewUser"
+                                                    class="link-danger">Register</a></p>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 d-flex align-items-center gradient-custom-2 "
+                                style="background-color: #1977dc;">
+                                <div class="">
+                                    <div id="about-section" class="m-4">
+                                        <h1>What is PracticeSmith?</h1>
+                                        <hr>
+                                        </hr>
+
+                                        <p align="left">Sports coaches have been using outdated methods
+                                            for making
+                                            practice plans.
+                                            PracticeSmith is software for coaches to be able to efficiently manage
+                                            teams, players, drills and practice plans. PracticeSmith automates the
+                                            creation of drills and practice plans to make practices more productive.
+                                            Coaches can draw and send plans to players in advance of practices and can
+                                            rely on PracticeSmith to store their practice plans to reuse with other
+                                            teams and in different seasons.</p>
+                                    </div>
+                                    <div id="carouselDevBottom" style="">
+                                        <div id="carouselExampleDark" class="carousel carousel-dark slide" style="">
+                                            <div class="carousel-indicators" style="bottom:-35px;">
+                                                <button type="button" data-bs-target="#carouselExampleDark"
+                                                    data-bs-slide-to="0" class="active" aria-current="true"
+                                                    aria-label="Slide 1"></button>
+                                                <button type="button" data-bs-target="#carouselExampleDark"
+                                                    data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                                <button type="button" data-bs-target="#carouselExampleDark"
+                                                    data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                                <button type="button" data-bs-target="#carouselExampleDark"
+                                                    data-bs-slide-to="3" aria-label="Slide 4"></button>
+                                            </div>
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active " data-bs-interval="10000">
+                                                    <div class="d-flex" style="justify-content: center;">
+                                                        <img src="https://i.ibb.co/qrV6Wyg/newS3pic.png" class="w-75"
+                                                            alt="..." style="justify-content: center; ">
+                                                    </div>
+                                                </div>
+
+                                                <div class="carousel-item" data-bs-interval="10000">
+                                                    <div class="d-flex" style="justify-content: center;">
+                                                        <img src="https://i.ibb.co/k4ZLgCp/newS2pic.png" class="w-75"
+                                                            alt="..." style="justify-content: center;">
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item" data-bs-interval="10000">
+                                                    <div class="d-flex" style="justify-content: center;">
+                                                        <img src="https://i.ibb.co/D5j9rjD/newS4pic.png" class="w-75"
+                                                            alt="..." style="justify-content: center;">
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item" data-bs-interval="10000">
+                                                    <div class="d-flex" style="justify-content: center;">
+                                                        <img src="https://i.ibb.co/Gv4sLnC/newSpic.png" class="w-75"
+                                                            alt="..." style="justify-content: center;">
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </section>
+
+    <footer class="fixed-bottom">
+        <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5"
+            style="background-color:
+            #1977dc">
+            <!-- Copyright -->
+            <div class="text-white mb-3 mb-md-0">
+                Copyright © 2023, Tom Smith. All rights reserved.
+            </div>
+            <!-- Copyright -->
+        </div>
+    </footer>
+
+
+    <!-- Modal Section -->
+
+    <!-- About us Modal -->
+    <div class="modal fade" id="aboutUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-1 row">
+                        <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                            <center>About Us</center>
+                        </h2>
+                        <hr style="width:30%; margin:auto;" />
+                        <br>
+                        <p align="left" style="font-family: Arial, Helvetica, sans-serif;">
+                            Sports coaches have been using outdated methods for making practice plans. PracticeSmith is
+                            software for coaches to be able to efficiently manage teams, players, drills and practice
+                            plans. PracticeSmith automates the creation of drills and practice plans to make practices
+                            more productive. Coaches can draw and send plans to players in advance of practices and can
+                            rely on PracticeSmith to store their practice plans to reuse with other teams and in
+                            different seasons.
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <div id="aboutCarousel" class="carousel carousel-dark slide" style="">
+                            <div class="carousel-indicators" style="bottom:-35px;">
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="3"
+                                    aria-label="Slide 4"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active " data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/qrV6Wyg/newS3pic.png" class="w-75" alt="..."
+                                            style="justify-content: center; ">
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/k4ZLgCp/newS2pic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/D5j9rjD/newS4pic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/Gv4sLnC/newSpic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- End of About Us Modal -->
+
+    <!-- Contact us Modal -->
+    <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="mb-1 row">
+                            <div class="col">
+                                <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                                    <center>Contact Us</center>
+                                </h2>
+                                <hr style="width:30%; margin:auto;" />
+                                <br>
+                                <p class="fa"> In order to service
+                                    you
+                                    better,
+                                    let
+                                    us know what you think. Don't hesitate to give us your feedback. Thank you.</p>
+                            </div>
+                        </div>
+                        <form action="/send-contact-email" method="post">
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <input type="text" placeholder="Enter your name" class="form-control fa"
+                                        id="contacterName" name="contacterName">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <input type="email" placeholder="Enter your email" class="form-control fa"
+                                        id="contacterEmail" name="contacterEmail">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+
+                                <div class="col">
+                                    <textarea name="messageField" placeholder="Enter your message"
+                                        class="form-control fa" id="messageField" rows="3"></textarea>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <!--
+                    <a href="#" class="btn btn-primary" name="emailLink" id="emailLink">Email</a> 
+                    -->
+                    <button type="submit" class="btn btn-primary"> Send email</button>
+
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of contact us Modal -->
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerNewUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="row g-3 needs-validation" action="/auth/register" method="POST" id="registerForm">
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <p class="text-center h5 fw-bold mb-5 mx-1 mx-md-4 mt-4">Create a New Account</p>
+                            <br>
+
+                            <div class="mb-3 row">
+
+                                <div class="col">
+                                    <label for="name" class="mb-2 fa">Username</label>
+                                    <input type="text" class="form-control fa" placeholder="Enter your name." id="name"
+                                        name="name">
+                                </div>
+
+                                <div class="col">
+                                    <label for="emailUser" class="mb-2 fa">Email</label>
+
+                                    <input type="email" class="form-control fa" placeholder="Enter your email address."
+                                        id="emailUser" name="emailUser">
+                                </div>
+
+
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="passwordUser" class="mb-2 fa">Password</label>
+                                    <input type="password" class="form-control fa" placeholder="Enter your password."
+                                        id="passwordUser" name="passwordUser">
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <label for="passwordConfirmUser" class="mb-2 fa">Confirm Password</label>
+                                    <input type="password" class="form-control fa" placeholder="Confirm your password."
+                                        id="passwordConfirmUser" name="passwordConfirmUser">
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onClick="submitRegisterForm()">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of register modal -->
+
+    <!-- Forgot my password modal -->
+    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Forget Your Password?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/reset-password-email" method="post" name="form10" onsubmit="showMessage()">
+                        <div class="row mb-3">
+                            <div class="form-group">
+
+                                <input type="email" name="email" class="form-control" id="email"
+                                    aria-describedby="emailHelp" placeholder="Enter email" value="">
+                            </div>
+                        </div>
+
+                        <input type="submit" class="btn btn-primary w-100" value="Send Verification Link">
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-md-12">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- End of forgot password modal -->
+    <!-- End Of Modal section -->
+
+
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+
+    <script>
+
+        function sendContactEmail() {
+            Email.send({
+
+                SecureToken: "bf36e481-6390-469a-b1af-e5764a435c48",
+                To: 'practicesmithweb@gmail.com',
+                From: 'practicesmithweb@gmail.com',
+                Subject: "This is the subject",
+                Body: document.getElementById("messageField").value
+            }).then(
+                message => alert(message)
+            );
+        }
+
+        $(document).ready(function () {
+            localStorage.clear()
+        })
+
+        console.log($('#emailHidden').val())
+        if (typeof $('#emailHidden').val() !== 'undefined' && typeof $('#passwordHidden').val() !== 'undefined') {
+            $('#email').val($('#emailHidden').val())
+            $('#password').val($('#passwordHidden').val())
+            $('#loginForm').submit()
+        }
+
+
+        $(function () {
+            $('#emailLink').on('click', function (event) {
+                event.preventDefault();
+                //alert("Huh");
+                var email = 'practicesmithweb@gmail.com';
+                var subject = 'Question from a user.';
+                var senderName = $('#contacterName').val();
+
+                var emailBody = $('#messageField').val();
+                window.location = 'mailto:' + email + '?subject=' + subject + '&body=' + "From " + senderName + "." + "%0D" + "%0D" + emailBody + "%0D";
+            });
+        });
+
+
+        function checkEmail() {
+            let email_val = document.getElementById("emailUser").value
+            //var newArrays = '{{userEmails}}'
+            // for (i = 0; i < newArrays.length; i++) {
+            //    console.log(newArrays[i])
+            // }
+            // newArr = new Array(newArrays)
+
+            var setOfEmails = $('input[name="array[]"]').map(function () {
+                return this.value;
+            }).get();
+
+            //console.log(email_val)
+            //var input = document.getElementsByName('array[]');
+            //var input = $('#arrIndex').val();
+            //console.log(arr[0])
+            for (var i = 0; i < setOfEmails.length; i++) {
+                if (email_val == setOfEmails[i]) {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+        function submitRegisterForm() {
+            //alert("Hello! I am an alert box!");
+            //var newArrays = '{{userEmails}}'
+            let passwordUser = document.getElementById("passwordUser").value
+            let passwordConfirm = document.getElementById("passwordConfirmUser").value
+            checkEmail();
+            if (checkEmail() == true) {
+                alert("An account with this email already exists!")
+
+            }
+            else if (passwordUser !== passwordConfirm) {
+                alert("Passwords do not match!")
+            }
+            else {
+                $("#registerForm").submit();
+            }
+
+
+        }
+
+        //function clearMessage() {
+        //  if ($('#messageField').text() !== '') {
+        //    $('#messageField').text(" ")
+        // }
+        // }
+
+
+        $(document).keypress(
+            function (event) {
+                if (event.which == '13') {
+                    event.preventDefault();
+                }
+            });
+
+
+        //window.onload(
+        //var current_url = window.location.href
+        //if (current_url.includes("auth")) {
+        //   window.location.assign(current_url.replace("/auth", ""))
+        // }
+        // )
+
+
+
+        function showMessage() {
+            alert("Reset password link has been sent to your email address.");
+        }
+
+
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

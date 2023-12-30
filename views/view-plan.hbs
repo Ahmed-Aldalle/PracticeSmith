@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>View Plan</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+    <nav style="justify-content: space-between;" class="d-flex" class="noprint">
+
+        <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4>
+        <ul>
+
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/select-team">Teams</a></li>
+            <li><a href="/players">Players</a></li>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/drills">Drills</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+
+        </ul>
+    </nav>
+
+    <div class="plan-title">
+        <div class="row">
+
+            <div class="column d-flex" style="justify-content:space-evenly;">
+                <div>
+                    <h2 style="font-size: 18px;"><span>{{planName}}</span></h2>
+                    <h2 style="font-size: 18px;"><span>{{finalplandate}}</span></h2>
+                    <h2 style="font-size: 18px;"><span>{{finalTime}}</span></h2>
+                </div>
+                <div>
+                    <h2 style="font-size: 18px;"><span>{{stats1}}</span></h2>
+                    <h2 style="font-size: 18px;"><span>{{stats2}}</span></h2>
+                </div>
+                <div>
+
+                    <h2 style="font-size: 18px;"><span>{{stats3}}</span></h2>
+                    <h2 style="font-size: 18px;"><span>{{stats4}}</span></h2>
+                </div>
+                <div>
+
+                    <button type="button" class="btn btn-primary noprint" onclick="window.print()"
+                        style="height: 35px; width: 55px; margin-left:15px;margin-top:10px">
+                        <i class="bi bi-printer">
+
+                        </i>
+                    </button>
+                </div>
+
+
+            </div>
+        </div>
+        <hr style="width:100%;  border-top: solid 1px #000 !important;">
+    </div>
+
+
+    <div class="container pt-2">
+        {{#each objectsA }}
+        <div class="row text-center" style="width:auto; white-space:nowrap; break-inside: avoid;">
+            <div class="col-md-1 pt-4">
+                <div class="row">
+                    <div class="column d-flex" style="justify-content:space-evenly;">
+
+                        <div>
+                            <h4 style="font-size: 16px;">{{startTime}}-{{endTime}}</h4>
+                        </div>
+
+                    </div>
+
+                    <div class="column d-flex" style="justify-content:space-evenly;">
+                        <div>
+                            <h4 style="font-size: 16px;">{{drill_name}}</h4>
+                        </div>
+                    </div>
+
+                    <div class="column d-flex" style="justify-content:space-evenly;">
+                        <div>
+                            <h4 style="font-size: 16px;">{{drill_type}}</h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-11">
+                <div class="row" style="flex-wrap:wrap">
+                    <div class="column d-flex" style="justify-content:space-evenly; padding-left: 70px;">
+                        {{#each positions}}
+                        <div>
+                            <h4 style="font-size: 16px;">{{this}}</h4>
+                            {{#if this}}
+                            <hr style="width:150px;  border-top: solid 1px #000 !important;">
+                            {{/if}}
+                        </div>
+                        {{/each}}
+
+                    </div>
+                    <div class="column d-flex" style="justify-content:space-evenly;">
+                        {{#each player_name}}
+                        <div>
+                            {{#each this}}
+                            <h4 style="font-size: 16px; position: static; padding-left: 35px;">{{this}}</h4>
+                            {{/each}}
+
+                        </div>
+                        {{/each}}
+
+                    </div>
+
+                    <div class="column d-flex pt-2" style="justify-content:space-evenly; ">
+                        <div>
+                            <h4 style="font-size: 16px;"><strong>Notes: </strong> {{notes_comments}}</h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <hr style="width:100%;  border-top: solid 1px #000 !important;">
+        {{/each}}
+
+    </div>
+
+
+
+    <!-- <table id="viewPlan" class="table table-hover table-fixed" style="font-size: 14px;">
+        <thead class="thead-dark">
+            <th>Duration</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Drill</th>
+            <th>Position</th>
+            <th>Player Name</th>
+            <th>Notes</th>
+        </thead>
+        <tbody>
+
+            {{#each objectsA }}
+
+            <tr style="font-size: 14px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{this.positions}}</td>
+                <td>
+                    <div class="d-flex" style="justify-content: space-between; flex-wrap:wrap">
+                        {{this.player_name}}
+                    </div>
+                </td>
+
+                <td></td>
+
+                {{!-- OPTION 2 FOR PRINTING --}}
+                {{!-- <td>
+                    <img src="{{pic_link}}" style="width:500px;height:500px;">
+                </td> --}}
+
+                {{!-- <td>{{this.duration}} min</td>
+                <td>{{startTime}}</td>
+                <td>{{endTime}}</td>
+                <td>{{this.player_name}}</td>
+                <td>{{this.drill_name}}</td>
+                <td>{{this.drill_category}}</td>
+                <td>{{this.drill_type}}</td>
+                <td>{{this.notes_comments}}</td>--}}
+
+            </tr>
+
+            {{!-- OPTION 1 FOR PRINTING --}}
+            {{!-- <tr>
+                {{#if pic_link}}
+                <td>
+                    <img src="{{pic_link}}" style="width:250px;height:250px;">
+                    <p>{{drill_name}}</p>
+                </td>
+
+                {{/if}}
+            </tr> --}}
+
+            {{/each}}
+
+        </tbody>
+
+    </table>-->
+
+    {{!-- OPTION 3 FOR PRINTING --}}
+    <div class="d-flex" style="justify-content: space-evenly; flex-wrap:wrap; align-items: center">
+        {{#each objectsA}}
+        <div>
+            {{#if pic_link}}
+            <p style="font-size: 20px; display: block; margin-left: 30%; margin-right: 20%; width: 70%;">
+                This sketch belongs to drill: {{drill_name}}</p>
+            <br>
+            <img src="{{pic_link}}"
+                style="height:500px; display: block; margin-left: 30%; margin-right: 20%; width: 70%;">
+
+            {{/if}}
+        </div>
+        {{/each}}
+    </div>
+
+
+
+    <!-- Contact us Modal -->
+    <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="mb-1 row">
+                            <div class="col">
+                                <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                                    <center>Contact Us</center>
+                                </h2>
+                                <hr style="width:30%; margin:auto;" />
+                                <br>
+                                <p class="fa"> In order to service
+                                    you
+                                    better,
+                                    let
+                                    us know what you think. Don't hesitate to give us your feedback. Thank you.</p>
+                            </div>
+                        </div>
+                        <form action="/send-contact-email" method="post">
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <input type="text" placeholder="Enter your name" class="form-control fa"
+                                        id="contacterName" name="contacterName">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <input type="email" placeholder="Enter your email" class="form-control fa"
+                                        id="contacterEmail" name="contacterEmail">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+
+                                <div class="col">
+                                    <textarea name="messageField" placeholder="Enter your message"
+                                        class="form-control fa" id="messageField" rows="3"></textarea>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <!--
+                    <a href="#" class="btn btn-primary" name="emailLink" id="emailLink">Email</a> 
+                    -->
+                    <button type="submit" class="btn btn-primary"> Send email</button>
+
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of contact us Modal -->
+
+    <!-- About us Modal -->
+    <div class="modal fade" id="aboutUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-1 row">
+                        <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                            <center>About Us</center>
+                        </h2>
+                        <hr style="width:30%; margin:auto;" />
+                        <br>
+                        <p align="left" style="font-family: Arial, Helvetica, sans-serif;">
+                            Sports coaches have been using outdated methods for making practice plans. PracticeSmith
+                            is
+                            software for coaches to be able to efficiently manage teams, players, drills and
+                            practice
+                            plans. PracticeSmith automates the creation of drills and practice plans to make
+                            practices
+                            more productive. Coaches can draw and send plans to players in advance of practices and
+                            can
+                            rely on PracticeSmith to store their practice plans to reuse with other teams and in
+                            different seasons.
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <div id="aboutCarousel" class="carousel carousel-dark slide" style="">
+                            <div class="carousel-indicators" style="bottom:-35px;">
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="3"
+                                    aria-label="Slide 4"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active " data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/qrV6Wyg/newS3pic.png" class="w-75" alt="..."
+                                            style="justify-content: center; ">
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/k4ZLgCp/newS2pic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/D5j9rjD/newS4pic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/Gv4sLnC/newSpic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- End of About Us Modal -->
+
+
+
+    {{!-- OPTION 4 FOR PRINTING --}}
+    {{!--<div class="" style="">
+        {{#each objectsA}}
+        <div>
+            {{#if pic_link}}
+            <img src="{{pic_link}}" style="width:1000;height:1000px;">
+            <p>{{drill_name}}</p>
+            {{/if}}
+        </div>
+        {{/each}}
+    </div> --}}
+
+
+    <script>
+
+        //var handlebars = require('handlebars')
+
+
+    </script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+</body>
+
+</html>

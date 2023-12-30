@@ -1,0 +1,1367 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Team</title>
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav style="justify-content: space-between;" class="d-flex">
+        <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4>
+        <ul>
+
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/select-team">Teams</a></li>
+            <li><a href="/players">Players</a></li>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/drills">Drills</a></li>
+        </ul>
+        <ul>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+
+    <div class="container mt-4">
+        <div class="jumbotron">
+            <h1 class="display-6 text-center" style="font-size:25px">Create a New Team</h1>
+        </div>
+    </div>
+
+    {{#if message }}
+    <div>
+        <h4 class="alert alert-danger mt-4">{{message}}</h4>
+    </div>
+    {{/if}}
+
+    <style>
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .tooltipp {
+            position: relative;
+        }
+
+        .tooltiptext {
+            display: none;
+            color: #1977dc;
+            position: absolute;
+            background-color: white;
+            border-radius: 6px;
+            padding: 3px;
+            position: absolute;
+            z-index: 100;
+            border: 1px;
+            border-style: solid;
+            border-color: #1977dc;
+
+        }
+
+        .tooltipp:hover span.tooltiptext {
+            display: block;
+        }
+    </style>
+
+    <!--Start Of Create-Team Modal For The Name -->
+    <div id="ChooseNameModal" class="modal">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create a New Team</h3>
+                    <span style="float: right;" class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="text-align:center;">Please enter a name for your new team.</p>
+                    <input type="name" name="NewTeamName" id="NewTeamName" class="form-control"
+                        style="width: 50%; margin-left: 25%;" placeholder="Enter Team Name Here" />
+                </div>
+                <footer>
+                    <input type="submit" style="float:right; margin-right:1%; margin-bottom:1%;"
+                        class="btn btn-primary btn-lg" id="saveTeam" value="SAVE" />
+                </footer>
+            </div>
+        </div>
+    </div>
+    <!--End of Create-Team Modal-->
+
+    <div class="m-4" id="overalltable">
+
+        <!-- Form begin -->
+        <form id='TeamSubmitForm' onsubmit=CheckDupes(event) action="/team/addTeam" method="POST">
+
+            <!-- Input Field for team name -->
+            <div class="container mt_4">
+                <input required type="name" name="teamName" id="teamName" class="form-control"
+                    style="width: 50%; margin-left: 25%;" placeholder="Enter Team Name Here" />
+            </div>
+
+            <div class="box">
+                <input type="submit" class="btn btn-primary btn-block btn-lg" id="save" value="SAVE" />
+            </div>
+
+            <div class="container" style="max-width:100%;">
+                <div class="row">
+                    <!--Player List Table-->
+                    <div class="column" style="width:50%;">
+                        <div class="table-responsive">
+                            <div id="homepagetablewrapper" class="table-wrapper">
+                                <div class="table-title">
+                                    <div class="row">
+                                        <div class="col">
+
+                                            <h2 style="color:white;"><b>
+                                                    Player List
+                                                </b></h2>
+                                        </div>
+                                        <div class="col">
+                                            <button style="float:right;" type="button" class="btn btn-primary"
+                                                id="addrow">
+                                                <i class="material-icons">&#xE147;</i>
+                                                Add Player
+                                                <!--<input type="button" class="btn btn-primary btn-sm" id="addndrill" value="Add Drill" ></input> -->
+                                            </button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#UploadPlayerModal" data-toggle="tooltip">
+                                                <i class="material-icons">&#xE24D;</i>
+                                                <span>
+                                                    Import Excel
+                                                </span>
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <table data-toggle="table" id="playerstable" class="table table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" data-field="pFirstName">First Name</th>
+                                            <th scope="col" data-field="pLastName">Last Name</th>
+                                            <th scope="col" data-field="pAge">Player Email</th>
+                                            <th scope="col" data-field="delete">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:30%;">
+                                                <input type="text" name="firstName" id="firstName"
+                                                    class="form-control" />
+                                            </td>
+                                            <td style="width:30%;">
+                                                <input type="text" name="lastName" id="lastName" class="form-control" />
+                                            </td>
+                                            <td style="width:30%;">
+                                                <input type="text" name="playerEmail" class="form-control" />
+                                            </td>
+                                            {{!-- <td class="col-sm-2">
+                                                <div>
+                                                    <input type="button" class="btn btn-danger btn-sm" id="deleterow"
+                                                        value="Delete"></input>
+                                                </div>
+                                            </td> --}}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Drill List Table-->
+                    <div class="column" style="width:50%;">
+                        <div class="table-responsive">
+                            <div id="homepagetablewrapper" class="table-wrapper">
+                                <div class="table-title">
+                                    <div class="row">
+                                        <div class="col" style="justify-content: space-between;">
+                                            <h2 style="color:white;"><b>Drill List</b></h2>
+                                        </div>
+                                        <div class="col">
+
+                                            <button style="float:right;" type="button" class="btn btn-primary"
+                                                id="addndrill">
+                                                <i class="material-icons">&#xE147;</i>
+                                                Add Drill
+                                                <!--<input type="button" class="btn btn-primary btn-sm" id="addndrill" value="Add Drill" ></input> -->
+                                            </button>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#UploadDrillModal" data-toggle="tooltip">
+                                                <i class="material-icons">&#xE24D;</i> <span>Import
+                                                    Excel</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table data-toggle="table" id="drillstable" class="table table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Drill Name</th>
+                                            <th scope="col" class="tooltipp">Category <i
+                                                    class="bi bi-question-circle-fill"></i>
+                                                <span class="tooltiptext">A broad categorization of
+                                                    <br>this drill, e.g. Pitching,
+                                                    <br> Catching, Hitting</span>
+                                            </th>
+                                            <th scope="col" class="tooltipp">Type <i
+                                                    class="bi bi-question-circle-fill"></i>
+                                                <span class="tooltiptext">An even broader categorization
+                                                    <br> of this drill, e.g. Offense,
+                                                    <br>Defense, Infield, Outfield</span>
+                                            </th>
+                                            <th scope="col">Description </th>
+                                            <th scope="col">Link </th>
+                                            <th scope="col" data-field="delete">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-sm-3">
+                                                <input type="text" name="drillName" class="form-control" />
+                                            </td>
+
+                                            <td class="col-sm-2">
+                                                <input type="text" name="category" class="form-control" />
+                                            </td>
+                                            <td class="col-sm-2">
+                                                <input type="text" name="type" class="form-control" />
+                                            </td>
+                                            <td class="col-sm-3">
+                                                <input type="text" name="Description" class="form-control" />
+                                            </td>
+                                            <td class="col-sm-2">
+                                                <input type="text" name="Link" class="form-control" />
+                                            </td>
+                                            {{!-- <td class="col-sm-2">
+                                                <div>
+                                                    <input type="button" class="btn btn-danger btn-sm" id="deletedrill"
+                                                        value="Delete"></input>
+                                                </div>
+                                            </td> --}}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+        <!-- Form end -->
+    </div>
+
+
+    <!-- Start of PLAYER upload modal -->
+    <div class="modal" id="UploadPlayerModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:#1977dc;">
+                        Upload players
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p align="left" style="font-size: 16px;">To upload list of players, download players template csv
+                        file first by clicking on "Download Template" button, then fill it out with your players. After
+                        filling out csv, click on "Select File" button then "Submit" button. </p>
+                    <button class="btn btn-primary" onClick="download_player_csv_file()">
+                        Download Template
+                    </button>
+                    <hr>
+                    <input type="file" id="player_file_upload" style="display: none;" />
+                    <button class="btn btn-sm btn-primary">
+                        <label for="player_file_upload" id="selector">
+                            Select File
+                        </label>
+                    </button>
+                    <p id="PlayerFile"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" onClick=UploadPlayers()>
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of PLAYER upload modal -->
+
+    <!-- Start of DRILL upload modal -->
+    <div class="modal" id="UploadDrillModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:#1977dc;">
+                        Upload players
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p align="left" style="font-size: 16px;">To upload list of drills, download drills template csv
+                        file first by clicking on "Download Template" button, then fill it out with your drills. After
+                        filling out csv, click on "Select File" button then "Submit" button. </p>
+                    <button class="btn btn-primary" onClick="download_drill_csv_file()">
+                        Download Template
+                    </button>
+                    <hr>
+                    <input type="file" id="drill_file_upload" style="display: none;" />
+                    <button class="btn btn-sm btn-primary">
+                        <label for="drill_file_upload" id="selector">
+                            Select File
+                        </label>
+                    </button>
+                    <p id="DrillFile"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" onClick=UploadDrills()>
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of DRILL upload modal -->
+
+
+
+    <!-- Contact us Modal -->
+    <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="mb-1 row">
+                            <div class="col">
+                                <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                                    <center>Contact Us</center>
+                                </h2>
+                                <hr style="width:30%; margin:auto;" />
+                                <br>
+                                <p class="fa"> In order to service
+                                    you
+                                    better,
+                                    let
+                                    us know what you think. Don't hesitate to give us your feedback. Thank you.</p>
+                            </div>
+                        </div>
+                        <form action="/send-contact-email" method="post">
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <input type="text" placeholder="Enter your name" class="form-control fa"
+                                        id="contacterName" name="contacterName">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <input type="email" placeholder="Enter your email" class="form-control fa"
+                                        id="contacterEmail" name="contacterEmail">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+
+                                <div class="col">
+                                    <textarea name="messageField" placeholder="Enter your message"
+                                        class="form-control fa" id="messageField" rows="3"></textarea>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <!--
+                    <a href="#" class="btn btn-primary" name="emailLink" id="emailLink">Email</a> 
+                    -->
+                    <button type="submit" class="btn btn-primary"> Send email</button>
+
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of contact us Modal -->
+
+    <!-- About us Modal -->
+    <div class="modal fade" id="aboutUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-1 row">
+                        <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                            <center>About Us</center>
+                        </h2>
+                        <hr style="width:30%; margin:auto;" />
+                        <br>
+                        <p align="left" style="font-family: Arial, Helvetica, sans-serif;">
+                            Sports coaches have been using outdated methods for making practice plans. PracticeSmith
+                            is
+                            software for coaches to be able to efficiently manage teams, players, drills and
+                            practice
+                            plans. PracticeSmith automates the creation of drills and practice plans to make
+                            practices
+                            more productive. Coaches can draw and send plans to players in advance of practices and
+                            can
+                            rely on PracticeSmith to store their practice plans to reuse with other teams and in
+                            different seasons.
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <div id="aboutCarousel" class="carousel carousel-dark slide" style="">
+                            <div class="carousel-indicators" style="bottom:-35px;">
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                                <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="3"
+                                    aria-label="Slide 4"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active " data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/qrV6Wyg/newS3pic.png" class="w-75" alt="..."
+                                            style="justify-content: center; ">
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/k4ZLgCp/newS2pic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/D5j9rjD/newS4pic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+                                <div class="carousel-item" data-bs-interval="10000">
+                                    <div class="d-flex" style="justify-content: center;">
+                                        <img src="https://i.ibb.co/Gv4sLnC/newSpic.png" class="w-75" alt="..."
+                                            style="justify-content: center;">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="modal-footer">
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- End of About Us Modal -->
+
+
+
+    <br>
+    {{!-- <div class="fileP" id="p_upload">
+        <input type="file" id="file_upload" style="display: none;" />
+        <label for="file_upload" id="selector">Select file</label>
+        <button onclick="upload()">Upload</button>
+    </div> --}}
+
+    <script>
+
+        //This function 'onbeforeunload' runs whenever the user navigates away or off the page
+        //It saves all the input fields to localStorage to be saved when returning to the page
+
+        window.onbeforeunload = function () {
+            var test1 = $('#teamName').val()
+            //console.log("onb4unload: "+test1)
+            localStorage.setItem("team_name", $('#teamName').val())
+
+            var i = 0;
+            //Saving players table input fields to localstorage
+            $('#playerstable > tbody > tr').each(function () {
+
+                var Fname = $(this).find('td').eq(0).find('input').eq(0).val();
+                var Lname = $(this).find('td').eq(1).find('input').eq(0).val();
+                var Ename = $(this).find('td').eq(2).find('input').eq(0).val();
+
+                localStorage.setItem(`Fname${i}`, Fname);
+                localStorage.setItem(`Lname${i}`, Lname);
+                localStorage.setItem(`Ename${i}`, Ename);
+
+                i += 1;
+            })
+
+            //saving number of rows in the players table to localstorage
+            localStorage.setItem(`num_player_rows`, i)
+
+            
+            var i=0;
+            //Saving drills table input fields to localstorage
+
+            $('#drillstable > tbody > tr').each(function () {
+
+                var Dname = $(this).find('td').eq(0).find('input').eq(0).val();
+                var Dcat = $(this).find('td').eq(1).find('input').eq(0).val();
+                var Dtype = $(this).find('td').eq(2).find('input').eq(0).val();
+                var Ddesc = $(this).find('td').eq(3).find('input').eq(0).val();
+                var Dlink = $(this).find('td').eq(4).find('input').eq(0).val();
+
+                console.log("DNAME: ")
+                console.log(Dname)
+
+                localStorage.setItem(`Dname${i}`, Dname);
+                localStorage.setItem(`Dcat${i}`, Dcat);
+                localStorage.setItem(`Dtype${i}`, Dtype);
+                localStorage.setItem(`Ddesc${i}`, Ddesc);
+                localStorage.setItem(`Dlink${i}`, Dlink);
+
+                i += 1;
+            })
+            //saving number of rows in the drills table to localstorage
+            localStorage.setItem(`num_drill_rows`, i)
+        }
+
+        //this onload function will run whenever the page is 'loaded', meaning 
+        //refreshed, navigated to, or entered into url
+        window.onload = function () {
+            var bool = localStorage.getItem('SaveBool');
+            console.log(bool);
+            if(bool==='true'){
+
+                var pInputsF = document.querySelectorAll('input[name="firstName"]');
+                var pInputsL = document.querySelectorAll('input[name="lastName"]');
+                var mInputs = document.querySelectorAll('input[name="playerEmail"]');
+
+                var PlayerTable = document.getElementById("playerstable");
+                var DrillTable = document.getElementById("drillstable");
+
+                var dInputsN = document.querySelectorAll('input[name="drillName"]');
+                var dInputsC = document.querySelectorAll('input[name="category"]');
+                var dInputsT = document.querySelectorAll('input[name="type"]');
+                //Clearing LocalStorage Variables
+                var num_rows = localStorage.getItem("num_player_rows")
+                console.log("NUM ROWS:")
+                console.log(num_rows)
+                for (i = num_rows - 1; i >= 0; i--) {
+                    localStorage.setItem(`Fname${i}`, "")
+                    localStorage.setItem(`Ename${i}`, "")
+                    localStorage.setItem(`Lname${i}`, "")
+                    pInputsF[i].value = ""
+                    pInputsL[i].value = ""
+                    mInputs[i].value = ""
+                }
+                var num_rows = localStorage.getItem("num_drill_rows")
+                console.log("NUM ROWS2:")
+                console.log(num_rows)
+                var DInputsD = document.querySelectorAll('input[name="Description"]')
+                var DInputsL = document.querySelectorAll('input[name="Link"]')
+
+                for (i = num_rows - 1; i >= 0; i--) {
+                    console.log("Testing " + i)
+                    localStorage.setItem(`Dname${i}`, "");
+                    localStorage.setItem(`Dcat${i}`, "");
+                    localStorage.setItem(`Dtype${i}`, "");
+                    localStorage.setItem(`Ddesc${i}`, "");
+                    localStorage.setItem(`Dlink${i}`, "");
+                    dInputsN[i].value = ""
+                    dInputsC[i].value = ""
+                    dInputsT[i].value = ""
+                    DInputsD[i].value = ""
+                    DInputsL[i].value = ""
+
+                }
+
+                
+                localStorage.setItem("team_name", "")
+
+                localStorage.setItem("num_player_rows", "")
+                localStorage.setItem("num_drill_rows", "")
+
+                $("#playerstable")
+
+                console.log(localStorage)
+                localStorage.clear();
+                console.log(localStorage)
+
+                $("#playerstable > tbody > tr").each(function () {
+                    if ($(this).index() !== 0) {
+                        $(this).remove()
+                    }
+                })
+                $("#drillstable > tbody > tr").each(function () {
+                    if ($(this).index() !== 0) {
+                        $(this).remove()
+                    }
+                })
+                bool = 'false';
+                localStorage.setItem('SaveBool', bool);
+                console.log("now: "+localStorage.getItem('SaveBool'));
+            }
+            
+
+
+            //console.log("onload: "+localStorage.getItem('team_name'))
+            
+            //Getting saved team name
+            $('#teamName').val(localStorage.getItem('team_name'))
+
+                   
+            //Getting saved number of table rows
+
+            var num_rows_p = localStorage.getItem("num_player_rows")
+            var num_rows_d = localStorage.getItem("num_drill_rows")
+            //console.log("numprows;= "+num_rows_p)
+
+            //Getting saved input fields in players table
+            var firstRowFname = document.querySelectorAll('input[name="firstName"]');
+            var firstRowLname = document.querySelectorAll('input[name="lastName"]');
+            var firstRowEname = document.querySelectorAll('input[name="playerEmail"]');
+
+            
+            //Getting saved input fields in drills table
+
+            var dInputsN = document.querySelectorAll('input[name="drillName"]');
+            var dInputsC = document.querySelectorAll('input[name="category"]');
+            var dInputsT = document.querySelectorAll('input[name="type"]');
+            var dInputsD = document.querySelectorAll('input[name="Description"]');
+            var dInputsL = document.querySelectorAll('input[name="Link"]');
+
+
+            //Checking if saved input variables were empty 
+            if(localStorage.getItem(`Fname${0}`)===null){
+
+                localStorage.setItem(`Fname${0}`, "")
+            }
+            if (localStorage.getItem(`Lname${0}`) === null) {
+                localStorage.setItem(`Lname${0}`, "")
+            }
+            if (localStorage.getItem(`Ename${0}`) === null) {
+                localStorage.setItem(`Ename${0}`, "")
+            }
+
+            if (localStorage.getItem(`Dname${0}`) === null) {
+                localStorage.setItem(`Dname${0}`, "")
+            }
+            if (localStorage.getItem(`Dcat${0}`) === null) {
+                localStorage.setItem(`Dcat${0}`, "")
+            }
+            if (localStorage.getItem(`Dtype${0}`) === null) {
+                localStorage.setItem(`Dtype${0}`, "")
+            }
+            if (localStorage.getItem(`Ddesc${0}`) === null) {
+                localStorage.setItem(`Ddesc${0}`, "")
+            }
+            if (localStorage.getItem(`Dlink${0}`) === null) {
+                localStorage.setItem(`Dlink${0}`, "")
+            }
+            if (localStorage.getItem('team_name') === null) {
+                localStorage.setItem('team_name', "")
+            }
+
+            if (localStorage.getItem(`Dname${0}`) === null) {
+                localStorage.setItem(`Dname${0}`, "")
+            }
+            if (localStorage.getItem(`Dcat${0}`) === null) {
+                localStorage.setItem(`Dcat${0}`, "")
+            }
+            if (localStorage.getItem(`Dtype${0}`) === null) {
+                localStorage.setItem(`Dtype${0}`, "")
+            }
+            if (localStorage.getItem(`Ddesc${0}`) === null) {
+                localStorage.setItem(`Ddesc${0}`, "")
+            }
+            if (localStorage.getItem(`Dlink${0}`) === null) {
+                localStorage.setItem(`Dlink${0}`, "")
+            }
+            if (localStorage.getItem('team_name') === null) {
+                localStorage.setItem('team_name', "")
+            }
+
+
+            //Setting saved input fields from local storage to html
+            firstRowFname[0].setAttribute("value" , localStorage.getItem(`Fname${0}`));
+            firstRowLname[0].setAttribute("value" , localStorage.getItem(`Lname${0}`));
+            firstRowEname[0].setAttribute("value" , localStorage.getItem(`Ename${0}`));
+            
+
+            dInputsN[0].setAttribute("value", localStorage.getItem(`Dname${0}`));
+            dInputsC[0].setAttribute("value", localStorage.getItem(`Dcat${0}`));
+            dInputsT[0].setAttribute("value", localStorage.getItem(`Dtype${0}`));
+            dInputsD[0].setAttribute("value", localStorage.getItem(`Ddesc${0}`));
+            dInputsL[0].setAttribute("value", localStorage.getItem(`Dlink${0}`));
+
+
+            //Rerender the player rows with localstorage variables
+            for(let i=1; i < num_rows_p; i++){                
+
+
+                var Fname = localStorage.getItem(`Fname${i}`);
+                var Lname = localStorage.getItem(`Lname${i}`);
+                var Ename = localStorage.getItem(`Ename${i}`);
+
+                $('#playerstable').append(`<tr>
+                    <td style="width:30%;">
+                        <input value="${Fname}" type="text" name="firstName" id="firstName" class="form-control" />
+                    </td>
+                    <td style="width:30%;">
+                        <input value="${Lname}" type="text" name="lastName" id="lastName" class="form-control" />
+                    </td>
+                    <td style="width:30%;">
+                        <input value="${Ename}" type="text" name="playerEmail" class="form-control"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <div>
+                            <input type="button" class="btn btn-danger btn-sm" id="deleterow"
+                                value="Delete"></input>
+                        </div>
+                    </td>
+                </tr>`)
+
+            }
+
+            //Rerender the drill rows with localstorage variables
+            for(let i=1; i<num_rows_d; i++){
+
+
+                var Dname = localStorage.getItem(`Dname${i}`);
+                var Dcat = localStorage.getItem(`Dcat${i}`);
+                var Dtype = localStorage.getItem(`Dtype${i}`);
+                var Ddesc = localStorage.getItem(`Ddesc${i}`);
+                var Dlink = localStorage.getItem(`Dlink${i}`);
+
+                $('#drillstable').append(`<tr>
+                    <td class="col-sm-3">
+                        <input value="${Dname}" type="text" name="drillName" class="form-control" />
+                    </td>
+
+                    <td class="col-sm-2">
+                        <input value="${Dcat}" type="text" name="category" class="form-control" />
+                    </td>
+                    <td class="col-sm-2">
+                        <input value="${Dtype}" type="text" name="type" class="form-control" />
+                    </td>
+                    <td class="col-sm-3">
+                        <input value="${Ddesc}" type="text" name="Description" class="form-control"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <input value="${Dlink}" type="text" name="Link" class="form-control"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <div>
+                            <input type="button" class="btn btn-danger btn-sm" id="deletedrill"
+                                value="Delete"></input>
+                        </div>
+                    </td>
+                </tr>`)
+            }
+
+
+
+        }
+
+
+        /*  CheckDupes runs in onSubmit on the page's form. This checks for 
+            duplicate values in team name and table rows before running the 
+
+            sql query to insert new team to database. This function also clears
+            the local storage if the form passes criteria.  */
+        function CheckDupes(evt){
+
+
+            //Checking existing team names
+            var TeamNameInput = document.getElementById('teamName')
+            var TeamNames = "{{TheTeamNames}}";
+            console.log("Existing Team Names: ")
+            console.log(TeamNames)
+            console.log("Team Input")
+            console.log(TeamNameInput)
+            var TeamNamesArr = TeamNames.split(",")
+            for (var i = 0; i < TeamNamesArr.length; i++) {
+                if (TeamNameInput.value === TeamNamesArr[i]) {
+                    alert("You already have a team with this name. Please change name.")
+                    evt.preventDefault();
+                    return;
+                }
+            }
+            //Checking for Duplicates/Empty Fields
+            var pInputsF = document.querySelectorAll('input[name="firstName"]');
+            var pInputsL = document.querySelectorAll('input[name="lastName"]');
+            var mInputs = document.querySelectorAll('input[name="playerEmail"]');
+
+            var PlayerTable = document.getElementById("playerstable");
+            var DrillTable = document.getElementById("drillstable");
+
+            var dInputsN = document.querySelectorAll('input[name="drillName"]');
+            var dInputsC = document.querySelectorAll('input[name="category"]');
+            var dInputsT = document.querySelectorAll('input[name="type"]');
+
+            FirstNames = [];
+            LastNames = [];
+            Emails = [];
+            for (var i = 0; i < pInputsF.length; i++) {
+                FirstNames[i] = pInputsF[i].value
+                LastNames[i] = pInputsL[i].value
+                Emails[i] = mInputs[i].value
+            }
+            DupeRows = []
+            for (var i = 0; i < pInputsF.length; i++) {
+                for (var j = 0; j < pInputsF.length; j++) {
+                    if (i === j) {
+
+                    }
+                    else {
+                        if ((FirstNames[i] === FirstNames[j]) && (LastNames[i] === LastNames[j]) && (Emails[i] === Emails[j])) {
+                            alert("Duplicate Rows Found In Player List.\nPlease delete duplicate value rows.");
+                            evt.preventDefault();
+                            return;
+                        }
+                    }
+                }
+            }
+            DrillNames = [];
+            DrillCategories = [];
+            DrillTypes = [];
+            for (var i = 0; i < dInputsN.length; i++) {
+                DrillNames[i] = dInputsN[i].value;
+                DrillCategories[i] = dInputsC[i].value;
+                DrillTypes[i] = dInputsT[i].value;
+            }
+
+            DupeRows = []
+            for (var i = 0; i < dInputsN.length; i++) {
+                for (var j = 0; j < dInputsN.length; j++) {
+                    if (i === j) {
+
+                    }
+                    else {
+                        if ((DrillNames[i] === DrillNames[j]) && (DrillCategories[i] === DrillCategories[j]) && (DrillTypes[i] === DrillTypes[j])) {
+                            alert("Duplicate Rows Found In Drill List.\nPlease delete duplicate value rows.");
+                            evt.preventDefault();
+                            return;
+                        }
+                    }
+                }
+            }
+
+            localStorage.setItem('SaveBool', 'true')
+
+            
+        }
+
+        /* Keypress 13 = 'Enter' or 'Return' key */
+        $(document).keypress(
+            function (event) {
+                if (event.which == '13') {
+                    event.preventDefault();
+                }
+            }
+        );
+
+        /* Gets the player import file variable */
+        document.getElementById('player_file_upload').onchange = function () {
+            var Pfile = document.getElementById('player_file_upload');
+            document.getElementById('PlayerFile').textContent = Pfile.files[0].name;
+        }
+        /* Gets the drill import file variable */
+        document.getElementById('drill_file_upload').onchange = function () {
+            var Dfile = document.getElementById('drill_file_upload');
+            document.getElementById('DrillFile').textContent = Dfile.files[0].name;
+        }
+
+        /*  download_player_csv_file is run when downloading a template
+            for importing players. Creates empty CSV with headers for players.  */
+        function download_player_csv_file() {
+            //define the heading for each row of the data
+            var csv = 'firstName,lastName,Email\n';
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+
+            //provide the name for the CSV file to be downloaded
+            hiddenElement.download = 'playersTemplate.csv';
+            hiddenElement.click();
+        }
+        /*  UploadPlayers parses through the uploaded file and checks if it is valid.
+            This is done by confirming a file has been selected & confirming that the
+            file has the 'csv' file extension.  */
+        function UploadPlayers() {
+            var files = document.getElementById('player_file_upload').files;
+            if (files.length == 0) {
+                alert("Please choose a file.");
+                return;
+            }
+
+            var filename = files[0].name;
+            var extension = filename.substring(filename.lastIndexOf(".")).toUpperCase();
+            if (extension == '.CSV') {
+                //Here calling another method to read CSV file into json
+                PlayerCSVtoJSON(files[0]);
+            } else {
+                alert("Please select a valid csv file.");
+            }
+            console.log("the files:")
+            console.log(files);
+            var PModal = document.getElementById("UploadPlayerModal");
+            PModal.style.display = 'none';
+            $('#UploadPlayerModal').modal('hide'); $('body').removeClass('modal-open'); $('.modal-backdrop').remove();
+            //ImportPlayerModal.style.display='none';
+        }
+
+        /*  PlayerCSVtoJSON takes verified file and appends rows to the players
+            table according to rows of csv file. This happens after error checking
+            for duplicates and empty rows in the csv file and table.  */
+        function PlayerCSVtoJSON(file) {
+            try {
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+                reader.onload = function (e) {
+                    var jsonData = [];
+                    var headers = [];
+                    var rows = e.target.result.split("\r\n");
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].split(",");
+                        var rowData = {};
+                        for (var j = 0; j < cells.length; j++) {
+                            if (i == 0) {
+                                var headerName = cells[j].trim();
+                                headers.push(headerName);
+                                //console.log("headerName:");
+                                //console.log(headerName);
+                            } else {
+                                var key = headers[j];
+                                //console.log("headers:");
+                                //console.log(headers[j]);
+                                if (key) {
+                                    //console.log('cells @ '+j+": ")
+                                    //console.log(cells[j])
+                                    rowData[key] = cells[j].trim();
+                                }
+                            }
+                        }
+                        //skip the first row (header) data
+                        if (i != 0) {
+                            jsonData.push(rowData);
+                        }
+                    }
+                    //Validating CSV file by headers
+                    jsonData.pop();
+                    for (var k = 0; k < 3; k++) {
+                        console.log('the header: ' + headers[k]);
+                        if ((headers[k] != 'firstName') && (headers[k] != 'lastName') && (headers[k] != 'Email')) {
+                            alert("Invalid CSV file. Please try again.");
+                            return;
+                        }
+                    }
+
+                    //Check if file is empty
+                    if(jsonData.length<1){
+
+                        alert("Empty CSV file. Please try again.");
+                        return;
+                    }
+                    // Loop to get rid of undefined rows
+                    for (const i in jsonData) {
+                        console.log("The data at " + i)
+                        console.log(jsonData[i])
+                        if ((typeof jsonData[i].firstName === 'undefined')
+                            && (typeof jsonData[i].lastName === 'undefined')
+                            && (typeof jsonData[i].Email === 'undefined')) {
+
+                            jsonData.splice(i, 1);
+                        }
+                    }
+
+
+                    // Loop to get rid of empty rows
+                    for (i = jsonData.length - 1; i >= 0; i--) {
+                        console.log("The data at "+i)
+                        console.log(jsonData[i])
+                        //if((jsonData[i].firstName===undefined)&&(jsonData[i].lastName===undefined)&&(jsonData[i].Email===undefined)){
+                        //alert("Empty row found in CSV File. Please try again.");
+                        //jsonData.splice(i, 1)
+
+                        //}
+                        if ((jsonData[i].firstName === '') && (jsonData[i].lastName === '') && (jsonData[i].Email === '')) {
+                            //alert("Empty row found in CSV File. Please try again.");
+                            jsonData.splice(i, 1)
+
+                        }
+                    }
+
+                    // console.log("TEST CONSOLE END");
+                    // displaying the json result in string format
+                    // document.getElementById("display_csv_data").innerHTML = JSON.stringify(jsonData);
+                    // var dataNew = JSON.stringify(jsonData);
+
+                    //Create number of csv file rows to html players table
+                    for (var i = 0; i < jsonData.length - 1; i++) {
+                        $('#playerstable').append(`<tr>
+                            <td style="width:30%;">
+                            <input type="text" name="firstName" id="firstName" class="form-control" />
+                            </td>
+                            <td style="width:30%;">
+                                <input type="text" name="lastName" id="lastName" class="form-control" />
+                            </td>
+                            <td style="width:30%;">
+                                <input type="text" name="playerEmail" class="form-control"/>
+                            </td>
+                            <td class="col-sm-2">
+                                <div>
+                                    <input type="button" class="btn btn-danger btn-sm" id="deleterow"
+                                        value="Delete"></input>
+                                </div>
+                            </td>
+                        </tr>`);
+
+                    }
+                    //Setting new created row values to the csv file row values
+                    var pInputsF = document.querySelectorAll('input[name="firstName"]');
+                    var pInputsL = document.querySelectorAll('input[name="lastName"]');
+                    var mInputs = document.querySelectorAll('input[name="playerEmail"]');
+                    //var pinputs = document.getElementsByName('playerName');
+
+                    for (var i = 0; i < jsonData.length; i++) {
+                        pInputsF[i].value = jsonData[i].firstName;
+                        mInputs[i].value = jsonData[i].Email;
+                        pInputsL[i].value = jsonData[i].lastName
+                    }
+
+
+                }
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        //End of Upload Players Function
+
+        /*  download_drill_csv_file is run when downloading a template
+            for importing drills. Creates empty CSV with headers for drills.  */
+        function download_drill_csv_file() {
+            //define the heading for each row of the data
+            var csv = 'DrillName,DrillCategory,DrillType,DrillDescription, DrillUrl\n';
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+
+            //provide the name for the CSV file to be downloaded
+            hiddenElement.download = 'drillsTemplate.csv';
+            hiddenElement.click();
+        }
+        /*  UploadDrills parses through the uploaded file and checks if it is valid.
+            This is done by confirming a file has been selected & confirming that the
+            file has the 'csv' file extension.  */
+        function UploadDrills() {
+            var files = document.getElementById('drill_file_upload').files;
+            if (files.length == 0) {
+                alert("Please choose any file...");
+                return;
+            }
+            else {
+                var Pfile = document.getElementById('PlayerFile');
+                var Dfile = document.getElementById('DrillFile');
+                Pfile.textContent = '';
+                Dfile.textContent = '';
+            }
+            var filename = files[0].name;
+            var extension = filename.substring(filename.lastIndexOf(".")).toUpperCase();
+            if (extension == '.CSV') {
+                //Here calling another method to read CSV file into json
+                DrillCSVtoJSON(files[0]);
+            } else {
+                alert("Please select a valid csv file.");
+            }
+            console.log("the files:")
+            console.log(files);
+            var DrModal = document.getElementById("UploadDrillModal");
+            DrModal.style.display = 'none';
+            $('#UploadDrillModal').modal('hide'); $('body').removeClass('modal-open'); $('.modal-backdrop').remove();
+            //ImportPlayerModal.style.display='none';
+        }
+
+        /*  DrillCSVtoJSON takes verified file and appends rows to the drills
+            table according to rows of csv file. This happens after error checking
+            for duplicates and empty rows in the csv file and table.  */
+        function DrillCSVtoJSON(file) {
+            try {
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+                reader.onload = function (e) {
+                    var jsonData = [];
+                    var headers = [];
+                    var rows = e.target.result.split("\r\n");
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].split(",");
+                        var rowData = {};
+                        for (var j = 0; j < cells.length; j++) {
+
+                            if (i == 0) {
+                                var headerName = cells[j].trim();
+                                headers.push(headerName);
+                            } else {
+                                var key = headers[j];
+                                if (key) {
+                                    rowData[key] = cells[j].trim();
+                                }
+                            }
+                        }
+
+                        //skip the first row (header) data
+                        if (i != 0) {
+                            jsonData.push(rowData);
+                        }
+                    }
+                    console.log("DRILL TESTING")
+                    console.log(jsonData)
+                    jsonData.pop();
+                    for (var k = 0; k < 5; k++) {
+                        console.log('the header: ' + headers[k]);
+                        if ((headers[k] != 'DrillName') && (headers[k] != 'DrillCategory') && (headers[k] != 'DrillType')
+                            && (headers[k] != 'DrillDescription') && (headers[k] != 'DrillUrl')) {
+                            alert("Invalid CSV file. Please try again.");
+                            return;
+                        }
+                    }
+                    if (jsonData.length < 1) {
+                        alert("Empty cells found in CSV file. Please try again.")
+                        return;
+                    }
+                    //Loop to get rid of undefined rows
+                    for (const i in jsonData) {
+                        console.log("The data at " + i)
+                        console.log(jsonData[i])
+                        if ((typeof jsonData[i].DrillName === 'undefined')
+                            && (typeof jsonData[i].DrillType === 'undefined')
+                            && (typeof jsonData[i].DrillCategory === 'undefined')) {
+
+                            jsonData.splice(i, 1);
+                        }
+                    }
+                    //Loop to get rid of empty rows
+                    for (i = jsonData.length - 1; i >= 0; i--) {
+                        //console.log(jsonData[i]);
+                        if ((jsonData[i].DrillName === '') && (jsonData[i].DrillCategory === '') && (jsonData[i].DrillType === '')) {
+                            //alert("Empty row found in CSV File. Please try again.");
+                            jsonData.splice(i, 1);
+                        }
+                    }
+
+                    //displaying the json result in string format
+                    // document.getElementById("display_csv_data").innerHTML = JSON.stringify(jsonData);
+                    //var dataNew = JSON.stringify(jsonData);
+                    //console.log(jsonData)
+
+                    //Create number of csv file rows to html drills table
+                    for (var i = 0; i < jsonData.length - 1; i++) {
+                        $('#drillstable').append(`<tr>
+                            <td class="col-sm-3">
+                                <input type="text" name="drillName" class="form-control" />
+                            </td>
+
+                            <td class="col-sm-2">
+                                <input type="text" name="category" class="form-control" />
+                            </td>
+
+                            <td class="col-sm-2">
+                                <input type="text" name="type" class="form-control" />
+                            </td>
+                            <td class="col-sm-3">
+                                <input type="text" name="Description" class="form-control"/>
+                            </td>
+                            <td class="col-sm-2">
+                                <input type="text" name="Link" class="form-control"/>
+                            </td>
+                            <td class="col-sm-2">
+                             <div>
+                            <input type="button" class="btn btn-danger btn-sm" id="deletedrill" value="Delete"></input>
+                            </div>
+                            </td>
+                        </tr>`);
+
+                    }
+                    //Setting new created row values to the csv file row values
+                    var dInputsN = document.querySelectorAll('input[name="drillName"]');
+                    var dInputsC = document.querySelectorAll('input[name="category"]');
+                    var dInputsT = document.querySelectorAll('input[name="type"]');
+                    var dInputsD = document.querySelectorAll('input[name="Description"]');
+                    var dInputsL = document.querySelectorAll('input[name="Link"]');
+
+                    for (var i = 0; i < jsonData.length; i++) {
+                        dInputsN[i].value = jsonData[i].DrillName;
+                        dInputsC[i].value = jsonData[i].DrillCategory;
+                        dInputsT[i].value = jsonData[i].DrillType;
+                        dInputsD[i].value = jsonData[i].DrillDescription;
+                        dInputsL[i].value = jsonData[i].DrillUrl;
+                    }
+                }
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+
+        //The red delete button on html drills table
+        $("#drillstable").on("click", "#deletedrill", function () {
+            var num_rows_d = Number(localStorage.getItem("num_drill_rows"))
+            num_rows_d -= 1;
+            localStorage.setItem("num_drill_rows", num_rows_d);
+            var row_index = $(this).closest("tr").index();
+            localStorage.removeItem(`Dname${row_index}`);
+            localStorage.removeItem(`Dcat${row_index}`);
+            localStorage.removeItem(`Dtype${row_index}`);
+            localStorage.removeItem(`Ddesc${row_index}`);
+            localStorage.removeItem(`Dlink${row_index}`);
+            $(this).closest("tr").remove();
+        });
+        //The red delete button on html players table
+        $("#playerstable").on("click", "#deleterow", function () {
+            var num_rows_p = Number(localStorage.getItem("num_player_rows"))
+            num_rows_p -= 1;
+            localStorage.setItem("num_player_rows", num_rows_p);
+            var row_index = $(this).closest("tr").index();
+            localStorage.removeItem(`Fname${row_index}`)
+            localStorage.removeItem(`Ename${row_index}`)
+            localStorage.removeItem(`Lname${row_index}`)
+            $(this).closest("tr").remove();
+        });
+        //The add player button on html players table
+        $('#addrow').click(function () {
+            var num_rows_p = Number(localStorage.getItem("num_player_rows"))
+            num_rows_p += 1;
+            localStorage.setItem("num_player_rows", num_rows_p);
+            $('#playerstable').append(`<tr>
+                    
+                    <td style="width:30%;">
+                        <input type="text" name="firstName" id="firstName" class="form-control" />
+                    </td>
+                    <td style="width:30%;">
+                        <input type="text" name="lastName" id="lastName" class="form-control" />
+                    </td>
+                    <td style="width:30%;">
+                        <input type="text" name="playerEmail" class="form-control"/>
+                    </td>
+                    <td class="col-sm-2">
+                        <div>
+                            <input type="button" class="btn btn-danger btn-sm" id="deleterow"
+                                value="Delete"></input>
+                        </div>
+                    </td>
+
+                </tr>`);
+            window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+        })
+        //The add drills button on html drills table
+        $('#addndrill').click(function () {
+            var num_rows_d = Number(localStorage.getItem("num_drill_rows"))
+            num_rows_d += 1;
+            localStorage.setItem("num_drill_rows", num_rows_d);
+            $('#drillstable').append(`<tr>
+                            <td class="col-sm-3">
+                                <input type="text" name="drillName" class="form-control" />
+                            </td>
+
+                            <td class="col-sm-2">
+                                <input type="text" name="category" class="form-control" />
+                            </td>
+                            <td class="col-sm-2">
+                                <input type="text" name="type" class="form-control" />
+                            </td>
+                            <td class="col-sm-3">
+                                <input type="text" name="Description" class="form-control"/>
+                            </td>
+                            <td class="col-sm-2">
+                                <input type="text" name="Link" class="form-control"/>
+                            </td>
+
+                            <td class="col-sm-2">
+                                <div>
+                            <input type="button" class="btn btn-danger btn-sm" id="deletedrill" value="Delete"></input>
+                            </div>
+                            </td>
+
+                        </tr>`);
+            window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+        })
+
+        //Closing the popups:
+        var span = document.getElementsByClassName("close")[0];
+        var NewNameModal = document.getElementById("ChooseNameModal");
+        NewNameModal.style.display = "block";
+
+        var SaveBtn = document.getElementById("saveTeam");
+        var ModalInput = document.getElementById("NewTeamName");
+        var PageInput = document.getElementById("teamName");
+
+        SaveBtn.onclick = function closeModal() {
+            PageInput.value = ModalInput.value;
+            NewNameModal.style.display = "none";
+        }
+
+        span.onclick = function () {
+            NewNameModal.style.display = "none";
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+</body>
+
+</html>

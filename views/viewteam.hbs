@@ -1,0 +1,1734 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>View Team</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+    </script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <nav style="justify-content: space-between;" class="d-flex">
+        <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4>
+        <ul>
+
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/select-team">Teams</a></li>
+            <li><a href="/players">Players</a></li>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/drills">Drills</a></li>
+        </ul>
+        <ul>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <style>
+        #homepageresponsive.table-responsive {
+            overflow-x: auto;
+        }
+
+        table.nonplantable tr th,
+        table.nonplantable tr td {
+            border-color: #e9e9e9;
+            padding: 1px 2px;
+            vertical-align: middle;
+            word-wrap: break-word;
+            /* add word-wrap property */
+        }
+
+        .table-custom-padding th:nth-child(2),
+        .table-custom-padding td:nth-child(2) {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .table-custom-padding th:nth-child(3),
+        .table-custom-padding td:nth-child(3) {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        /* Adjust the padding for the Email column */
+        .table-custom-padding th:nth-child(4),
+        .table-custom-padding td:nth-child(4) {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow: auto;
+        }
+
+        table,
+        th,
+        td {
+            width: auto;
+            /* remove fixed width */
+            margin-left: 12px;
+            margin-right: 0;
+            margin-top: 1%;
+            text-align: left;
+            color: #000;
+            word-wrap: break-word;
+        }
+
+        table {
+            border-top: none;
+            border-bottom: none;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .row {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .column {
+            float: left;
+            width: 33%;
+            padding: 5px;
+        }
+
+        /* Clearfix (clear floats) */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 16px;
+        }
+
+        th {
+            background-color: #1977dc;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        a {
+            display: block;
+            text-decoration: none;
+            color: black;
+        }
+
+        .button a {
+            border-radius: 7px;
+            float: right;
+            margin-right: 2%;
+            border: 1px;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #ChooseTeamBtn {
+            margin-left: -1px;
+            margin-top: 10px;
+
+        }
+
+        #homepagewrapper.table-wrapper {
+            width: 33%;
+            background: #fff;
+            padding: 20px 25px;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            overflow-x: auto;
+            /* add overflow-x property */
+        }
+
+        #homepagetabletitle.table-title {
+            padding-bottom: 15px;
+            background: #1977dc;
+            color: #fff;
+            padding: 16px 30px;
+            margin: -20px -25px 10px;
+            border-radius: 3px 3px 0 0;
+            position: sticky;
+            /* add position property */
+            top: 0;
+            /* add top property */
+            z-index: 1;
+            /* add z-index property */
+        }
+
+        .custom-checkbox {
+            display: flex;
+            align-items: normal;
+            justify-content: normal;
+            height: 100%;
+        }
+
+        .table-title .btn {
+            color: #566787;
+            float: right;
+            font-size: 11.5px;
+            background: #fff;
+            border: none;
+            min-width: 50px;
+            border-radius: 2px;
+            border: none;
+            outline: none !important;
+            margin-left: 10px;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .table>thead>tr>th {
+            vertical-align: middle;
+        }
+
+        .table>tbody>tr>td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        #playersTable tbody tr td:not(:first-child, :last-child) span:hover {
+            cursor: pointer;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        #drillsTable tbody tr td:not(:first-child, :last-child) span:hover {
+            cursor: pointer;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        #playersTable tbody tr td:not(:first-child, :last-child) span:hover {
+            cursor: pointer;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        #drillsTable tbody tr td:not(:first-child, :last-child) span:hover {
+            cursor: pointer;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        .team-plan-name-link {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .team-plan-name-link:hover {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        table.nonplantable td a {
+            font-weight: normal;
+            color: #000000;
+
+        }
+    </style>
+
+
+
+    <div class="row">
+        <div>
+            <h1></h1>
+            <div>
+                <button style="background-color:#1977dc; float:none;" class="btn btn-primary" id="ChooseTeamBtn">Choose
+                    Team</button>
+            </div>
+        </div>
+
+    </div>
+    <div id="ChooseTeamModal" class="modal">
+        <div style="margin-left:25%; margin-top:10%; width:40%; height:auto;" class="modal-content">
+            <div class="modal-header">
+                <h3>Choose a Team</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Select a team you would like to view on the Team Page.</p>
+                <table class="nonplantable">
+                    <th style="text-align: center; color:rgb(250, 248, 248);">Team Names: </th>
+                    <tbody id="teamList">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--End of Choose Team Modal-->
+
+    <div class="column" style="width: 33%;">
+        <div class="table-responsive">
+            <div id="homepagetablewrapper" class="table-wrapper">
+                <div class="table-title" style="margin: bottom 30px; box-sizing: border-box; position: relative;">
+
+                    <div class="row" style="text-align:center">
+                        <div class="col" style=" margin: bottom 10px;">
+
+                            <h2 style="color:white; margin-bottom:10px;"><b> {{team_name}}'s Players</b>
+                            </h2>
+
+                            <button type="button" style="background-color:white; " class="btn btn-primary"
+                                data-bs-toggle="modal" data-bs-target="#uploadModal" data-toggle="tooltip">
+                                <i class="material-icons">&#xE24D;</i> <span>Import
+                                </span>
+                            </button>
+
+
+                            <button type="button" style="background-color:white; " class="btn btn-primary "
+                                data-bs-toggle="modal" data-bs-target="#deletePlayerModal" data-toggle="tooltip"
+                                data-team_id="{{this.Team_ID}}">
+                                <i class="material-icons">&#xE15C;</i> <span>Delete Player</span>
+                            </button>
+                            <button type="button" style=" background-color:white; " class="btn btn-primary"
+                                data-bs-toggle="modal" data-bs-target="#addPlayerModal" data-team_id="{{team_id}}">
+                                <i class="material-icons">&#xE147;</i> <span>Add Player</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table id="playersTable" class="table table-striped table-hover nonplantable table-custom-padding">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="selectAllPlayers">
+                                    <label for="selectAllPlayers"></label>
+                                </span>
+                            </th>
+                            <th
+                                style="text-align: center; padding-left: 1px; padding-right: 10px; white-space: nowrap;">
+                                First Name </th>
+                            <th style="text-align: center; padding-left: 10px; white-space: nowrap;"> Last Name </th>
+                            <th style="text-align: center; white-space: nowrap;"> Email </th>
+                            <th style="text-align: center; padding-left: 50px;" class="actionCol">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each rows2}}
+                        <tr>
+                            <td>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="checkbox1" value="{{this.Players_ID}}">
+                                    <label for="checkbox1"></label>
+                                </span>
+
+                            </td>
+                            <td style="padding-right: 30px; white-space: nowrap;" class="text-center">
+                                <span>{{this.First_Name}}</span>
+                            </td>
+                            <td style=" padding-right: 30px; white-space: nowrap; " class="text-center">
+                                <span>{{this.Last_Name}}</span>
+                            </td>
+                            <td style="padding-left: 20px; white-space:nowrap;" class="text-center">
+                                <span>{{this.P_Email}}</span>
+                            </td>
+
+                            <td class="text-end">
+
+
+
+                                <a href="#" class="edit" data-player_name="" data-f_name="{{First_Name}}"
+                                    data-l_name="{{Last_Name}}" data-player_id="{{this.Players_ID}}"
+                                    data-team_id="{{this.Team_ID}}" data-player_name="{{P_Name}}"
+                                    data-player_email="{{P_Email}}" data-bs-toggle="modal"
+                                    data-bs-target="#editTeamPlayerModal">
+                                    <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <!-- Add New Player Modal -->
+    <!-- Add New Player Modal -->
+    <!-- End Of Add New Player Modal -->
+    <div class="modal fade" id="addPlayerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New player</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="row g-3 needs-validation" method="POST" action="/team/add-new-player-team/{{team_id}}"
+                    id="addPlayerForm">
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>First name</label>
+                            <input type="text" class="form-control" name="f_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last name</label>
+                            <input type="text" class="form-control" name="l_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="player_email" required>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary" onClick="submitAddTeamPlayerForm()">Add</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- End Of Add New Player Modal -->
+    <!-- Edit Player Modal -->
+    <!-- Edit Player Modal -->
+    <div class="modal fade" id="editTeamPlayerModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Player</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="row g-3 needs-validation" method="POST"
+                    action="/team/edit-player-team/{{playerIDs}}/{{team_id}}" id="editTeamPlayerForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="f_name" class="form-control" name="f_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="l_name" class="form-control" name="l_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="p_email" class="form-control" name="p_email" required>
+                        </div>
+
+                        <input type="hidden" id="p_id" class="form-control" name="p_id" value="">
+                        <input type="hidden" id="Team_ID" class="form-control" name="Team_ID" value="">
+
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onClick="submitEditTeamPlayerForm()">Save
+                        Changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- End of Edit Player Modal -->
+    <!-- Delete Modal HTML -->
+    <div class="modal fade" id="deletePlayerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class=" g-3 needs-validation" method="POST" id="deleteTeamForm">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Delete Player</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 14px;">Are you sure you want to delete these players?</p>
+                        <p class="text-danger" style="font-size: 14px;">This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger" onClick="reload()">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End of delete Modal -->
+
+
+    <!-- new upload modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color:#1977dc;">Upload Players</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="csvForm" action="/team/uploadCsvTeamPlayers/{{team_id}}" method="POST">
+
+
+                    </form>
+
+                    <p align="left" style="font-size: 16px;">To upload list of players, download players
+                        template csv
+                        file
+                        first by clicking on
+                        below button, and fill it out with your player. Then click on select file button and
+                        submit the
+                        template. </p>
+                    <button class="btn btn-primary" onClick="download_csv_file()">Download Template</button>
+                    <hr>
+                    <div class="photo-input">
+                        <input type="file" id="upload" />
+                        <button class="btn btn-sm btn-primary" onclick="document.getElementById('upload').click()">
+                            Select a File </button>
+                    </div>
+                    <br>
+                    <div id="file-upload-filename-players"></div>
+
+
+
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-sm btn-primary"
+                        onClick="submitUploadTeamForm()">Submit</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of upload modal -->
+    <!-- End of upload modal -->
+
+
+
+
+    <div class="column" style="width: 33%;">
+        <div class="table-responsive">
+            <div id="homepagetablewrapper" class="table-wrapper">
+                <div class="table-title">
+                    <div class="row" style="text-align:center">
+                        <div class="col" style="float:inline-start">
+
+                            <h2 style="color:white; margin-bottom:10px;"><b> {{team_name}}'s Plans</b></h2>
+
+
+                            
+
+                            <div class="button-group"
+                                style="display: flex; justify-content: center; align-items: center;">
+                                <a style="margin-right: 5px;" href="/practice/{{team_id}}" class="btn btn-primary"><i
+                                        class="material-icons">&#xE147;</i>
+                                    <span>Add Plan(s)</span></a>
+                                <button style="margin-right: 5px;" type="button" class="btn btn-primary"
+                                    data-bs-toggle="modal" data-bs-target="#deletePlanModal" data-toggle="tooltip">
+                                    <i class="material-icons">&#xE15C;</i> <span>Delete Plan</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table id="plansTable" class="table table-striped table-hover nonplantable">
+                    <thead>
+                        <tr>
+                            <th class="actionCol">
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="selectAllPlans">
+                                    <label for="selectAllPlans"></label>
+                                </span>
+                            </th>
+                            <th class="text-center" style="text-align:left;"> Name</th>
+                            <th></th>
+                            <th class="text-center" style="text-align:left margin-left:left; white-space: nowrap; ">
+                                Date Created </th>
+                            <th></th>
+                            <th class="text-center actionCol">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each rows6}}
+                        <tr>
+                            <td>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="checkbox1" name="options[]" value="{{this.Plan_ID}}">
+                                    <label for="checkbox1"></label>
+                                </span>
+                            </td>
+                            <td>
+                                
+                                <a href="/edit-plan/{{this.Plan_ID}}/{{this.Team_ID}}"
+                                    class="team-plan-name-link">{{this.Name}}</a>
+                            </td>
+                            <td></td>
+                            <td style="text-align:left; margin-left:left; white-space: nowrap; ">{{this.Created}}</td>
+                            <td></td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="/view-plan/{{this.Plan_ID}}/{{this.Team_ID}}" class="visibility"
+                                        data-toggle="modal"><i class="material-icons" data-toggle="tooltip"
+                                            title="View">&#xE8f4;</i></a>
+                                    <a href="/edit-plan/{{this.Plan_ID}}/{{this.Team_ID}}" data-team_id="{{team_id}}"
+                                        data-plan_id="{{plan_id}}" class="visibility"><i class="material-icons"
+                                            data-toggle="tooltip" title="Edit">edit</i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Delete Modal HTML -->
+        <div class="modal fade" id="deletePlanModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class=" g-3 needs-validation" method="POST" id="deleteTeamFormPlan">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Delete Plans</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p style="font-size: 14px;">Are you sure you want to delete these plans?</p>
+                            <p class="text-danger" style="font-size: 14px;">This action cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger" onClick="reload()">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End of delete Modal -->
+    </div>
+
+    <div class="column" style="width: 33%;">
+        <div class="table-responsive">
+            <div id="homepagetablewrapper" class="table-wrapper">
+                <div class="table-title" style="box-sizing: border-box; position: relative;">
+                    <div class="row justify-content-center" style="text-align:center">
+                        <div class="col-auto" style="float:none">
+
+                            <h2 style="color:white; margin-bottom:10px;"><b> {{team_name}}'s Drills</b></h2>
+
+
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#uploadDrillModal" data-toggle="tooltip">
+                                <i class="material-icons">&#xE24D;</i> <span>Import
+                                </span>
+                            </button>
+
+
+
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#deleteTeamDrillModal" data-toggle="tooltip"
+                                data-team_id="{{this.Team_ID}}">
+                                <i class="material-icons">&#xE15C;</i> <span>Delete Drill</span>
+                            </button>
+
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#addDrillModal">
+                                <i class="material-icons">&#xE147;</i> <span>Add Drill</span>
+                            </button>
+
+
+                        </div> <!-- -->
+                    </div>
+                </div>
+                <table id="drillsTable" class="table  table-striped table-hover nonplantable">
+                    <!-- Update the table header <th> elements -->
+                    <thead>
+                        <tr>
+                            <th style="width: 5%" class="text-center">
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="selectAllDrills">
+                                    <label for="selectAllDrills"></label>
+                                </span>
+                            </th>
+                            <th style="white-space:nowrap;" class="text-center">Name</th>
+                            <th style="white-space:nowrap;" class="text-center">Category</th>
+                            <th style="white-space:nowrap;" class="text-center">Type</th>
+                            <th style="white-space:nowrap;" class="text-center">Description</th>
+                            <th style="white-space:nowrap; padding-left:33px;" class="text-center">Link</th>
+                            <th class="text-center actionCol">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{#each rows4}}
+                        <tr>
+                            <td>
+                                <span class="custom-checkbox">
+                                    <input type="checkbox" id="checkbox1" value="{{this.Drill_ID}}">
+                                    <label for="checkbox1"></label>
+                                </span>
+                            </td>
+                            <td> <span>{{this.Dr_Name}}</span> </td>
+                            <td> <span> {{this.Dr_Category}} </span> </td>
+                            <td> <span>{{this.Dr_Type}}</span> </td>
+                            <td> <span>{{this.Description}}</span> </td>
+                            {{#if this.Url}}
+                            <td style="padding-left:33px;"><a href="{{this.Url}}" target="_blank">Url</a> </td>
+                            {{else}}
+                            <td style="padding-left:33px;"><a href="#" target="_blank">Empty</a> </td>
+                            {{/if}}
+                            <td class="actionCol">
+                                <a href="#" class="edit_drill" data-drill_name="{{Dr_Name}}"
+                                    data-drill_Category="{{Dr_Category}}" data-drill_type="{{Dr_Type}}"
+                                    data-drill_description="{{Description}}" data-drill_id="{{Drill_ID}}"
+                                    data-drill_link="{{Url}}"><i class="material-icons" data-toggle="tooltip"
+                                        title="Edit">&#xE254;</i></a>
+
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Add New Drill Modal -->
+        <div class="modal fade" id="addDrillModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">New Drill</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="row g-3 needs-validation" method="POST" action="/team/add-new-drill-team/{{team_id}}"
+                        id="addDrillForm">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="drill_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" class="form-control" name="drill_category" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <input type="text" class="form-control" name="drill_type" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" class="form-control" name="drill_description" required>
+                            </div>
+                            <div class="form-group">
+                                <label> Link</label>
+                                <input type="text" class="form-control" name="drill_link">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-primary" onClick="submitAddDrillForm()">Add</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- End Of Add New Drill Modal -->
+        <!-- Edit  Modal -->
+        <div class="modal fade" id="editTeamDrillModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Drill</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="row g-3 needs-validation" method="POST"
+                        action="/team/edit-drill-team/{{drillIDs}}/{{team_id}}" id="editTeamDrillForm">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" id="drill_name" class="form-control" name="drill_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <input type="text" id="drill_category" class="form-control" name="drill_category"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <input type="text" id="drill_type" class="form-control" name="drill_type" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <input type="text" id="drill_description" class="form-control" name="drill_description"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label> Link</label>
+                                <input type="text" class="form-control" id="drill_link" name="drill_link">
+                            </div>
+
+                            <input type="hidden" id="drill_id" class="form-control" name="drill_id" value="">
+                            <input type="hidden" id="team_id" class="form-control" name="team_id" value="">
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onClick="submitEditTeamDrillForm()">Save
+                            Changes</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- End of Edit drill Modal -->
+        <!-- Delete Modal HTML -->
+        <div class="modal fade" id="deleteTeamDrillModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="g-3 needs-validation" method="POST" id="deleteTeamDrillForm">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Delete Drill</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p style="font-size: 14px;">Are you sure you want to delete these drills?</p>
+                            <p class="text-danger" style="font-size: 14px;"> This action cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger" onClick="reload()">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End of delete Modal -->
+        <!-- new upload modal -->
+        <div class="modal fade" id="uploadDrillModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" style="color:#1977dc;">Upload Drills</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="csvFormDrill" action="/team/uploadCsvTeamDrills/{{team_id}}" method="POST">
+
+
+
+                        </form>
+
+                        <p align="left" style="font-size: 16px;">To upload list of drills, download drills
+                            template csv
+                            file
+                            first by clicking on
+                            below button, and fill it out with your drills. Then click on select file button and
+                            submit the
+                            template. </p>
+                        <button class="btn btn-primary" onClick="download_csv_drills_file()">Download
+                            Template</button>
+                        <hr>
+                        <div class="photo-input">
+                            <input type="file" id="uploadDrill" />
+                            <button class="btn btn-sm btn-primary"
+                                onclick="document.getElementById('uploadDrill').click()">
+                                Select a File </button>
+                        </div>
+                        <br>
+                        <div id="file-upload-filename-drills"></div>
+
+
+
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-sm btn-primary"
+                            onClick="submitDrillUploadForm()">Submit</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of upload modal -->
+
+
+
+        <!-- Contact us Modal -->
+        <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="mb-1 row">
+                                <div class="col">
+                                    <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                                        <center>Contact Us</center>
+                                    </h2>
+                                    <hr style="width:30%; margin:auto;" />
+                                    <br>
+                                    <p class="fa"> In order to service
+                                        you
+                                        better,
+                                        let
+                                        us know what you think. Don't hesitate to give us your feedback. Thank you.</p>
+                                </div>
+                            </div>
+                            <form action="/send-contact-email" method="post">
+                                <div class="mb-3 row">
+                                    <div class="col">
+                                        <input type="text" placeholder="Enter your name" class="form-control fa"
+                                            id="contacterName" name="contacterName">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+                                    <div class="col">
+                                        <input type="email" placeholder="Enter your email" class="form-control fa"
+                                            id="contacterEmail" name="contacterEmail">
+                                    </div>
+                                </div>
+                                <div class="mb-3 row">
+
+                                    <div class="col">
+                                        <textarea name="messageField" placeholder="Enter your message"
+                                            class="form-control fa" id="messageField" rows="3"></textarea>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <!--
+                    <a href="#" class="btn btn-primary" name="emailLink" id="emailLink">Email</a> 
+                    -->
+                        <button type="submit" class="btn btn-primary"> Send email</button>
+
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End of contact us Modal -->
+
+        <!-- About us Modal -->
+        <div class="modal fade" id="aboutUsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-1 row">
+                            <h2 style="font-family: Arial, Helvetica, sans-serif;">
+                                <center>About Us</center>
+                            </h2>
+                            <hr style="width:30%; margin:auto;" />
+                            <br>
+                            <p align="left" style="font-family: Arial, Helvetica, sans-serif;">
+                                Sports coaches have been using outdated methods for making practice plans. PracticeSmith
+                                is
+                                software for coaches to be able to efficiently manage teams, players, drills and
+                                practice
+                                plans. PracticeSmith automates the creation of drills and practice plans to make
+                                practices
+                                more productive. Coaches can draw and send plans to players in advance of practices and
+                                can
+                                rely on PracticeSmith to store their practice plans to reuse with other teams and in
+                                different seasons.
+                            </p>
+                        </div>
+
+                        <div class="row">
+                            <div id="aboutCarousel" class="carousel carousel-dark slide" style="">
+                                <div class="carousel-indicators" style="bottom:-35px;">
+                                    <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0"
+                                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1"
+                                        aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="2"
+                                        aria-label="Slide 3"></button>
+                                    <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="3"
+                                        aria-label="Slide 4"></button>
+                                </div>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active " data-bs-interval="10000">
+                                        <div class="d-flex" style="justify-content: center;">
+                                            <img src="https://i.ibb.co/qrV6Wyg/newS3pic.png" class="w-75" alt="..."
+                                                style="justify-content: center; ">
+                                        </div>
+                                    </div>
+
+                                    <div class="carousel-item" data-bs-interval="10000">
+                                        <div class="d-flex" style="justify-content: center;">
+                                            <img src="https://i.ibb.co/k4ZLgCp/newS2pic.png" class="w-75" alt="..."
+                                                style="justify-content: center;">
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item" data-bs-interval="10000">
+                                        <div class="d-flex" style="justify-content: center;">
+                                            <img src="https://i.ibb.co/D5j9rjD/newS4pic.png" class="w-75" alt="..."
+                                                style="justify-content: center;">
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item" data-bs-interval="10000">
+                                        <div class="d-flex" style="justify-content: center;">
+                                            <img src="https://i.ibb.co/Gv4sLnC/newSpic.png" class="w-75" alt="..."
+                                                style="justify-content: center;">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- End of About Us Modal -->
+
+
+
+
+
+
+    </div>
+    </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.1/dist/bootstrap-table.min.js"></script>
+
+    <script>
+
+
+
+        // Get the modal
+        var modal = document.getElementById("ChooseTeamModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("ChooseTeamBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+
+
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function () {
+            $.ajax({
+                url: '/my-teams',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var teams = data;
+                    var html = '';
+                    for (var i = 0; i < teams.length; i++) {
+                        var team = teams[i];
+                        if (team.Team_Name) { // Add a check for the Team_Name property
+                            html += '<tr><td><a href="../viewteam/' + team.Team_ID + '">' + team.Team_Name + '</a></td></tr>';
+                        }
+                    }
+                    //$('#ChooseTeamModalViewTeam tbody').html(''); // Clear the modal body
+                    //$('#ChooseTeamModalViewTeam tbody').html(html); // Add the new HTML
+                    $('#teamList').html(html); // Add the new HTML
+                    modal.style.display = "block";
+                },
+                error: function () {
+                    alert('Failed to retrieve teams');
+                }
+            });
+        };
+
+
+
+
+        /*
+            $(document).ready(function () {
+                // if a team has been chosen on another page, change home page route to reflect this
+                var session_team_id = localStorage.getItem("team_id")
+                if (session_team_id !== null && typeof window.location.href.split("/")[4] === 'undefined') {
+                    window.location.href = window.location.href + "/" + Number(session_team_id)
+                }
+                else {
+                    var team_id = window.location.href.split("/")[4]
+                    if (typeof team_id !== 'undefined') {
+                        localStorage.setItem("team_id", team_id)
+                        console.log(localStorage.getItem("team_id"))
+                    }
+                }
+                //var team_id = window.location.href.split("/")[4]
+                //console.log(team_id)
+                //document.getElementById("addPlayerForm").action = "/team/add-new-player-home/"+team_id
+                setTimeout(Reloader, 200);
+            });
+        */
+        // Get the "select all" checkbox for the players table
+        var selectAllPlayersCheckbox = document.getElementById("selectAllPlayers");
+        var selectAllDrillsCheckbox = document.getElementById("selectAllDrills");
+        var selectAllPlansCheckbox = document.getElementById("selectAllPlans");
+        // Get all the checkboxes in the players table and the drills table
+        var playersCheckboxes = document.querySelectorAll("#playersTable tbody input[type=checkbox]");
+        var drillsCheckboxes = document.querySelectorAll("#drillsTable tbody input[type=checkbox]");
+        var plansCheckboxes = document.querySelectorAll("#plansTable tbody input[type=checkbox]");
+        // Add an event listener to the "select all" checkbox for the players table
+        var selectedPlayerIds = [];
+        selectAllPlayersCheckbox.addEventListener("click", function () {
+            // If the "select all" checkbox is checked
+            if (selectAllPlayersCheckbox.checked) {
+                // Check all the checkboxes in the players table
+                for (var i = 0; i < playersCheckboxes.length; i++) {
+                    playersCheckboxes[i].checked = true;
+                }
+
+                // Get the ids of all the players in the table and log them to the console
+                var playerIds = Array.from(playersCheckboxes).map(function (checkbox) {
+                    return checkbox.value;
+                });
+                console.log(playerIds);
+            } else {
+                // Uncheck all the checkboxes in the players table
+                for (var i = 0; i < playersCheckboxes.length; i++) {
+                    playersCheckboxes[i].checked = false;
+                }
+            }
+        });
+        selectAllDrillsCheckbox.addEventListener("click", function () {
+            // If the "select all" checkbox is checked
+            if (selectAllDrillsCheckbox.checked) {
+                // Check all the checkboxes in the players table
+                for (var i = 0; i < drillsCheckboxes.length; i++) {
+                    drillsCheckboxes[i].checked = true;
+                }
+
+                // Get the ids of all the players in the table and log them to the console
+                var drillIds = Array.from(drillsCheckboxes).map(function (checkbox) {
+                    return checkbox.value;
+                });
+                console.log(drillIds);
+            } else {
+                // Uncheck all the checkboxes in the players table
+                for (var i = 0; i < drillsCheckboxes.length; i++) {
+                    drillsCheckboxes[i].checked = false;
+                }
+            }
+        });
+        selectAllPlansCheckbox.addEventListener("click", function () {
+            // If the "select all" checkbox is checked
+            if (selectAllPlansCheckbox.checked) {
+                // Check all the checkboxes in the players table
+                for (var i = 0; i < plansCheckboxes.length; i++) {
+                    plansCheckboxes[i].checked = true;
+                }
+
+                // Get the ids of all the players in the table and log them to the console
+                var planIds = Array.from(plansCheckboxes).map(function (checkbox) {
+                    return checkbox.value;
+                });
+                console.log(planIds);
+            } else {
+                // Uncheck all the checkboxes in the players table
+                for (var i = 0; i < plansCheckboxes.length; i++) {
+                    plansCheckboxes[i].checked = false;
+                }
+            }
+        });
+
+        function reload() {
+            setTimeout(function () { window.location.reload(true) }, 1000);
+        }
+
+        $(document).ready(function () {
+            // Activate tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+
+        });
+
+
+
+        //create a user-defined function to download CSV file 
+        function download_csv_file() {
+
+            //define the heading for each row of the data
+            var csv = 'firstName,lastName,Email\n';
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+
+            //provide the name for the CSV file to be downloaded
+            hiddenElement.download = 'playersTemplate.csv';
+            hiddenElement.click();
+        }
+
+
+
+        document.getElementById("upload").addEventListener("change", upload, false);
+
+        var file_name_input = document.getElementById('upload');
+        var infoAreaPlayer = document.getElementById('file-upload-filename-players');
+
+        function upload(e) {
+            var data = null;
+            var file = e.target.files[0];
+            var verifyFileType = file.type;
+            var modifiedFileName = file.name;
+            modifiedFileName = modifiedFileName.replace(/[0-9]/g, '').replace(/[{()}]/g, '').replace(/\s/g, '');
+
+            var extension = modifiedFileName.substring(modifiedFileName.lastIndexOf(".")).toUpperCase();
+            console.log(extension)
+            if (extension !== '.CSV') {
+                alert("Invalid CSV file. Please try again.")
+            } else {
+                console.log("is file? true")
+                var reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = function (event) {
+                    var csvData = event.target.result;
+                    var parsedCSV = d3.csv.parseRows(csvData);
+                    var csvColumns = parsedCSV[0]
+                    var numberOfCsvColumns = parsedCSV[0].length
+
+                    if (numberOfCsvColumns != 3 || csvColumns[0] != "firstName" || csvColumns[1] != "lastName" || csvColumns[2] != "Email") {
+                        alert("Please select a valid csv file.")
+                    } else {
+                        var fileName = e.target.files[0].name;
+                        console.log("fileName:", fileName);
+                        infoAreaPlayer.textContent = 'File name: ' + fileName;
+                        for (var i = 0; i < parsedCSV.length - 1; i++) {
+                            $('#csvForm').append(`
+                                <input type ="hidden" id="firstNamePlayer" name="firstNamePlayer">
+                                <input type="hidden" id="lastNamePlayer" name="lastNamePlayer">
+                                <input type="hidden" id="player_upload_email" name="player_upload_email"> `)
+                        }
+
+                        var fInputs = document.querySelectorAll('input[name="firstNamePlayer"]');
+                        var lInputs = document.querySelectorAll('input[name="lastNamePlayer"]');
+                        var eInputs = document.querySelectorAll('input[name="player_upload_email"]');
+
+                        parsedCSV.forEach(function (d, i) {
+                            if (i == 0) return true; // skip the columns row
+
+                            if (d.constructor === Array) {
+                                console.log("d0:", d[0])
+                                console.log("d1:", d[1])
+                                console.log("d2:", d[2])
+
+                                console.log("fInputs Length: ", fInputs.length)
+                                console.log("i value: ", i)
+                                fInputs[i - 1].value = d[0]
+                                lInputs[i - 1].value = d[1]
+                                eInputs[i - 1].value = d[2]
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+
+        function submitUploadTeamForm() {
+
+            var testValFname = $("#csvForm").find("#firstNamePlayer").val();
+            var testValSname = $("#csvForm").find("#lastNamePlayer").val();
+            var testValEmail = $("#csvForm").find("#player_upload_email").val();
+
+            var fileLen = document.getElementById('upload').files;
+
+            if (fileLen.length == 0) {
+                alert("Please choose a file.")
+            }
+
+            else if (testValFname == undefined && testValSname == undefined && testValEmail == undefined) {
+                alert("Please fill out the file.")
+            }
+            else {
+
+                $("#csvForm").submit();
+            }
+            //$("#csvForm").submit();
+            //setInterval('autoRefresh()', 1000);
+            //console.log(window.location.href)
+            //window.location = window.location.href;
+            //location.reload();
+
+        }
+        //create a user-defined function to download CSV file 
+        function download_csv_drills_file() {
+
+            //define the heading for each row of the data
+            var csv = 'Name,Category,Type,Description,LinkToVideo\n';
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+
+            //provide the name for the CSV file to be downloaded
+            hiddenElement.download = 'drillsTemplate.csv';
+            hiddenElement.click();
+        }
+
+
+
+        document.getElementById("uploadDrill").addEventListener("change", uploadDrill, false);
+
+        var file_name_input_drills = document.getElementById('uploadDrill');
+        var infoAreaDrills = document.getElementById('file-upload-filename-drills');
+        //document.getElementById("download").addEventListener("click", download, false);
+        //var fName = "";
+        //var pEmail = "";
+        function uploadDrill(e) {
+            var data = null;
+            var file = e.target.files[0];
+            var verifyFileType = file.type;
+            var modifiedFileName = file.name;
+            modifiedFileName = modifiedFileName.replace(/[0-9]/g, '').replace(/[{()}]/g, '').replace(/\s/g, '');
+            if (modifiedFileName != "drillsTemplate.csv" || verifyFileType != 'text/csv') {
+                alert("Please upload the same template file!")
+            }
+            else {
+                console.log("is file? true")
+                var reader = new FileReader();
+                reader.readAsText(file);
+                //console.log("file? ", file)
+                //var fileName = file_name_input.files[0].name;
+                //infoArea.textContent = 'File name: ' + fileName;
+                reader.onload = function (event) {
+                    var csvData = event.target.result;
+                    var parsedCSV = d3.csv.parseRows(csvData);
+                    var csvColumns = parsedCSV[0]
+                    var numberOfCsvColumns = parsedCSV[0].length
+
+                    if (numberOfCsvColumns != 5 || csvColumns[0] != "Name" || csvColumns[1] != "Category" || csvColumns[2] != "Type" || csvColumns[3] != "Description" || csvColumns[4] != "LinkToVideo") {
+                        alert("Please do not change the format of the template file!")
+                    }
+
+                    else {
+                        var fileName = file_name_input_drills.files[0].name;
+                        console.log("fileName:", fileName);
+                        infoAreaDrills.textContent = 'File name: ' + fileName;
+
+                        for (var i = 0; i < parsedCSV.length - 1; i++) {
+
+                            $('#csvFormDrill').append(`
+                            <input type ="hidden" id="drillUploadName" name="drillUploadName">
+                            <input type="hidden" id="drillUploadCategory" name="drillUploadCategory">
+                            <input type="hidden" id="drillUploadType" name="drillUploadType"> 
+                            <input type="hidden" id="drillUploadDescription" name="drillUploadDescription">
+                            <input type="hidden" id="drillUploadUrl" name="drillUploadUrl">`)
+
+                        }
+
+                        var drillNameInput = document.querySelectorAll('input[name="drillUploadName"]');
+                        var drillCategoryInput = document.querySelectorAll('input[name="drillUploadCategory"]');
+                        var drillTypeInput = document.querySelectorAll('input[name="drillUploadType"]');
+                        var drillDescriptionInput = document.querySelectorAll('input[name="drillUploadDescription"]');
+                        var drillUrlInput = document.querySelectorAll('input[name="drillUploadUrl"]');
+
+                        parsedCSV.forEach(function (d, i) {
+                            if (i == 0) return true; // skip the columns row
+
+                            if (d.constructor === Array) {
+
+                                console.log("d0:", d[0])
+                                console.log("d1:", d[1])
+                                console.log("d2:", d[2])
+                                console.log("d2:", d[3])
+                                console.log("d2:", d[4])
+
+
+                                drillNameInput[i - 1].value = d[0]
+                                drillCategoryInput[i - 1].value = d[1]
+                                drillTypeInput[i - 1].value = d[2]
+                                drillDescriptionInput[i - 1].value = d[3]
+                                drillUrlInput[i - 1].value = d[4]
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        function submitDrillUploadForm() {
+            //$("#csvFormDrill").submit();
+
+            var testValDrName = $("#csvFormDrill").find("#drillUploadName").val();
+            var testValDrCategory = $("#csvFormDrill").find("#drillUploadCategory").val();
+            var testValDrType = $("#csvFormDrill").find("#drillUploadType").val();
+            var testValDrDes = $("#csvFormDrill").find("#drillUploadDescription").val();
+            var testValDrUrl = $("#csvFormDrill").find("#drillUploadUrl").val();
+
+            var fileLen = document.getElementById('uploadDrill').files;
+
+            if (fileLen.length == 0) {
+                alert("Please choose a file.")
+            }
+            else if (testValDrName == undefined && testValDrCategory == undefined && testValDrCategory == undefined && testValDrDes == undefined && testValDrUrl == undefined) {
+                alert("Please fill out the file.")
+            }
+            else {
+                $("#csvFormDrill").submit();
+            }
+        }
+
+        function submitAddTeamPlayerForm() {
+            $("#addPlayerForm").submit();
+        }
+
+        function submitEditTeamPlayerForm() {
+            $("#editTeamPlayerForm").submit();
+        }
+
+        function openEditModalWithData(player_n, player_e, player_id, player_f_name, player_l_name) {
+            $('#editTeamPlayerModal').modal('show');
+            $('#p_name').val(player_n);
+            $('#p_email').val(player_e);
+            $('#p_id').val(player_id);
+            $('#f_name').val(player_f_name);
+            $('#l_name').val(player_l_name);
+        
+        
+        }
+        $(document).ready(function () {
+            // Edit button click event
+            $(document).on('click', '.edit', function () {
+                var player_n = $(this).data('player_name');
+                var player_e = $(this).data('player_email');
+                var player_id = $(this).data('player_id');
+                var player_f_name = $(this).data('f_name');
+                var player_l_name = $(this).data('l_name');
+
+
+                    openEditModalWithData(player_n, player_e, player_id, player_f_name, player_l_name);
+                });
+                 $(document).on('click', '#playersTable tbody tr td:not(:first, :last)', function () {
+                        var $row = $(this).closest('tr');
+                        var player_n = $row.find('.edit').data('player_name');
+                        var player_e = $row.find('.edit').data('player_email');
+                        var player_id = $row.find('.edit').data('player_id');
+                        var player_f_name = $row.find('.edit').data('f_name');
+                        var player_l_name = $row.find('.edit').data('l_name');
+
+                        openEditModalWithData(player_n, player_e, player_id, player_f_name, player_l_name);
+                    });
+                });
+
+                function autoRefresh() {
+                    window.location = window.location.href;
+                }
+
+
+                // Select/Deselect checkboxes
+                var checkbox = $('table tbody input[type="checkbox"]');
+                $("#selectAll").click(function () {
+                    if (this.checked) {
+                        checkbox.each(function () {
+                            this.checked = true;
+                        });
+                    } else {
+                        checkbox.each(function () {
+                            this.checked = false;
+                        });
+                    }
+                });
+                checkbox.click(function () {
+                    if (!this.checked) {
+                        $("#selectAll").prop("checked", false);
+                    }
+                });
+
+                $(document).ready(function () {
+                    var indexArray = []
+                    $("#selectAll").click(function () {
+                        if (this.checked) {
+                            checkbox.each(function () {
+                                this.checked = true;
+                                var currentRow = $(this).closest("tr");
+                                var col1 = currentRow.find("td").eq(0).find("#checkbox1").val();
+                                console.log(col1);
+                                indexArray.push(col1);
+                                console.log("Checkbox is checked.");
+
+                            });
+                            //indexArray = indexArray.shift();
+                            console.log(indexArray)
+                        } else {
+                            checkbox.each(function () {
+                                this.checked = false;
+                                var currentRow = $(this).closest("tr");
+                                var col2 = currentRow.find("td").eq(0).find("#checkbox1").val();
+                                console.log(col2)
+
+                                for (var i = 0; i < indexArray.length; i++) {
+                                    if (indexArray[i] === col2) {
+                                        indexArray.splice(i, 1);
+                                    }
+                                }
+                            });
+                            console.log(indexArray)
+                        }
+                    });
+                    //var indexArray = []
+                    $('input[type="checkbox"]').click(function () {
+                        if ($(this).prop("checked") == true) {
+
+                            var currentRow = $(this).closest("tr");
+                            var col1 = currentRow.find("td").eq(0).find("#checkbox1").val();
+                            console.log(col1);
+                            indexArray.push(col1);
+                            console.log("Checkbox is checked.");
+                            console.log(indexArray)
+
+
+
+                        }
+                        else if ($(this).prop("checked") == false) {
+                            console.log("Checkbox is unchecked.");
+                            var currentRow = $(this).closest("tr");
+                            var col2 = currentRow.find("td").eq(0).find("#checkbox1").val();
+                            console.log(col2)
+
+                            for (var i = 0; i < indexArray.length; i++) {
+                                if (indexArray[i] === col2) {
+                                    indexArray.splice(i, 1);
+                                }
+
+                            }
+
+                            // console.log(indexArray)
+                        }
+
+
+
+
+                    }); // End of [input[type="checkbox"] click function
+                    $(document).ready(function () {
+                        $(document).on('click', '.edit', function () {
+                            var player_n = $(this).data('player_name');
+                            var player_e = $(this).data('player_email');
+                            var player_id = $(this).data('player_id');
+                            var player_f_name = $(this).data('f_name');
+                            var player_l_name = $(this).data('l_name');
+
+                            $('#editTeamPlayerModal').modal('show');
+                            $('#p_name').val(player_n)
+                            $('#p_email').val(player_e)
+                            $('#p_id').val(player_id)
+                            $('#f_name').val(player_f_name)
+                            $('#l_name').val(player_l_name)
+                        });
+
+                    });
+
+
+
+                    $("#deleteTeamForm").submit(function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: "/team/deleteTeamPlayerAjax",
+                            type: "POST",
+                            data: { 'id': JSON.stringify(indexArray) },
+                            success: function (data) {
+                                //console.log(data);
+                            }
+                        });
+                        //setInterval('window.location.reload()', 1000);
+                        //setInterval('autoRefresh()', 1000)
+
+                    });
+                    //setInterval('autoRefresh()', 500);
+
+                    $("#deleteTeamDrillForm").submit(function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: "/team/deleteTeamDrillAjax",
+                            type: "POST",
+                            data: { 'id': JSON.stringify(indexArray) },
+                            success: function (data) {
+                                //console.log(data);
+                            }
+                        });
+
+
+
+                    });
+
+                    $("#deleteTeamFormPlan").submit(function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: "/team/deleteTeamPlanAjax",
+                            type: "POST",
+                            data: { 'id': JSON.stringify(indexArray) },
+                            success: function (data) {
+                                //console.log(data);
+                            }
+                        });
+                        //setInterval('window.location.reload()', 1000);
+                        //setInterval('autoRefresh()', 1000)
+
+
+
+                    });
+
+                });
+
+
+
+
+
+                function submitAddDrillForm() {
+                    $("#addDrillForm").submit();
+                }
+
+                function submitEditTeamDrillForm() {
+                    $("#editTeamDrillForm").submit();
+                }
+
+                function openEditDrillModalWithData(drill_name, drill_category, drill_type, drill_des, drill_id, drill_link) {
+                    $('#editTeamDrillModal').modal('show');
+                    $('#drill_name').val(drill_name)
+                    $('#drill_category').val(drill_category)
+                    $('#drill_type').val(drill_type)
+                    $('#drill_description').val(drill_des)
+                    $('#drill_id').val(drill_id)
+                    $('#drill_link').val(drill_link)
+
+                    
+                }
+
+                $(document).ready(function () {
+                    // Edit button click event
+                    $(document).on('click', '.edit_drill', function () {
+                        var drill_name = $(this).data('drill_name');
+                        var drill_category = $(this).data('drill_category');
+                        var drill_type = $(this).data('drill_type');
+                        var drill_des = $(this).data('drill_description');
+                        var drill_id = $(this).data('drill_id');
+                        var drill_link = $(this).data('drill_link');
+
+                        openEditDrillModalWithData(drill_name, drill_category, drill_type, drill_des, drill_id, drill_link);
+                    });
+                    $(document).on('click', '#drillsTable tbody tr td:not(:first, :last)', function () {
+                        var $row = $(this).closest('tr');
+                        var drill_name = $row.find('.edit_drill').data('drill_name');
+                        var drill_category = $row.find('.edit_drill').data('drill_category');
+                        var drill_type = $row.find('.edit_drill').data('drill_type');
+                        var drill_des = $row.find('.edit_drill').data('drill_description');
+                        var drill_id = $row.find('.edit_drill').data('drill_id');
+                        var drill_link = $row.find('.edit_drill').data('drill_link');
+                        openEditDrillModalWithData(drill_name, drill_category, drill_type, drill_des, drill_id, drill_link);
+                    });
+                   
+                });
+
+
+
+
+
+                $(document).ready(function () {
+                    $(document).on('click', '.edit_drill', function () {
+                        var drill_name = $(this).data('drill_name');
+                        var drill_category = $(this).data('drill_category');
+                        var drill_type = $(this).data('drill_type');
+                        var drill_des = $(this).data('drill_description');
+                        var drill_id = $(this).data('drill_id');
+                        var drill_link = $(this).data('drill_link');
+
+                        $('#editTeamDrillModal').modal('show');
+                        $('#drill_name').val(drill_name)
+                        $('#drill_category').val(drill_category)
+                        $('#drill_type').val(drill_type)
+                        $('#drill_description').val(drill_des)
+                        $('#drill_id').val(drill_id)
+                        $('#drill_link').val(drill_link)
+
+                    });
+
+                });
+
+            
+
+        
+
+    </script>
+</body>
+
+
+
+</html>

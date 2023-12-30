@@ -1,0 +1,1756 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Edit Plan</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/gh/tofsjonas/sortable/sortable.min.css" rel="stylesheet" />
+    <link href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+        integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/tofsjonas/sortable/sortable.min.js"></script>
+
+</head>
+
+<body>
+    <nav style="justify-content: space-between;" class="d-flex">
+
+       <h4><a style="color: white; text-decoration:none;" href="/HomePage">PracticeSmith</a></h4> 
+
+
+        <ul>
+
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/select-team">Teams</a></li>
+            <li><a href="/players">Players</a></li>
+            <li><a href="/plans">Plans</a></li>
+            <li><a href="/drills">Drills</a></li>
+        </ul>
+        <ul>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#aboutUsModal">About Us</a></li>
+            <li><a href="#" data-bs-toggle="modal" data-bs-target="#contactUsModal">Contact Us</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+
+    <div>
+        <form action="/team/updatePlan/" method="POST" onsubmit="submitForm()">
+            <div class="" style="text-align: center; margin-left: 60px; margin-top: 25px; margin-bottom:25px;">
+                <div class="row">
+                    <select class="custom-select" id="teamSelect" style="height: 40px; width:10%; text-align:center; margin-bottom: 10px">
+
+                        <option value="{{team_id}}">{{team_name}}</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <input name="planTitle" class="form-control col-sm-1" type="text" id="title" placeholder="Plan Name"
+                        style="width: 360px; margin-left:1px" value="{{planName}}" required>
+                    <input type="date" name="planDate" id="planDate" class="col-sm-1 form-control"
+                        style="margin-right: 50px;width:200px" value="{{plandate}}" required>
+                    <h6 class="col-sm-1" style="margin-top:15px">Plan Start Time</h6>
+                    <input class="form-control col-sm-1" type="time" id="planStartTime" value="{{planstarttime}}"
+                        name="planStartTime" style="width: 150px; height:50px;">
+                    <input style="height:30px; width:55px;margin-top:10px;margin-left:10px" type="button"
+                        class="btn btn-block btn-primary btn-sm col-sm-1" id="timeOK" value="Apply" />
+
+                    <h6 class="col-sm-1"
+                        style="margin-left:25px;margin-top:5px; border-style: solid; border-radius: 5px">Offense -
+                        Infield:
+                        <strong>0 min</strong>
+                    </h6>
+                    <h6 class="col-sm-1"
+                        style="margin-left:25px;margin-top:5px; border-style: solid; border-radius: 5px">Defense -
+                        Infield:
+                        <strong>0 min</strong>
+                    </h6>
+                    <h6 class="col-sm-1"
+                        style="margin-left:25px;margin-top:5px; border-style: solid; border-radius: 5px">Offense -
+                        Outfield:
+                        <strong>0 min</strong>
+                    </h6>
+                    <h6 class="col-sm-1"
+                        style="margin-left:25px;margin-top:5px; border-style: solid; border-radius: 5px">Defense -
+                        Outfield:
+                        <strong>0 min</strong>
+                    </h6>
+                    <button style="height:30px; width:95px;margin-top:10px;margin-left:10px" type="button"
+                        class="btn btn-primary btn-sm col-sm-1" data-bs-toggle="modal" data-bs-target="#statsModal"
+                        onclick="clearStatsForModal()">
+                        More Stats
+                    </button>
+
+
+                </div>
+            </div>
+
+            {{!-- hidden fields for POST/routes --}}
+            <input name="chooseTeamHidden" type="hidden" id="chooseTeamHidden" class="form-control">
+            <input name="planid" type="hidden" id="planid" class="form-control">
+            <input id="teamid" class="form-control" value="{{team_id}}" style="display: none;">
+
+            <input name="stats_drill_1" type="hidden" id="stats_drill_1" class="form-control">
+            <input name="stats_drill_2" type="hidden" id="stats_drill_2" class="form-control">
+            <input name="stats_drill_3" type="hidden" id="stats_drill_3" class="form-control">
+            <input name="stats_drill_4" type="hidden" id="stats_drill_4" class="form-control">
+
+            <input type="hidden" name="positionPlayers" value="{{positionPlayers}}">
+            <input type="hidden" name="positionPlayersSubmit" value="">
+
+            <div style="margin-right:50px; margin-left:50px;" class="table-responsive">
+                <table data-toggle="table" id="plantable"
+                    class="table table-bordered table-hover table-sm table-striped plantable" style="width:100%;">
+                    <thead class="sticky" style="color:#0d6efd">
+                        <tr>
+                            <th scope="col" data-field="time">
+                                Start/End Time
+                            </th>
+                            <th scope="col" data-field="dtype" class="no-sort">Drill
+                            </th>
+                            <th scope="col" data-field="dname" class="no-sort">Drawing
+                            </th>
+                            {{!-- <th scope="col" data-field="players" class="no-sort">Availble Players</th> --}}
+                            <th scope="col" data-field="notes" class="no-sort">Notes</th>
+                            <th scope="col" data-field="delete" class="no-sort"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{#each objectsA}}
+
+                        <tr>
+                            <td id='times' class="othercolumnsptable">
+                                <div class="row g-0">
+                                    <div class="col">
+                                        <h6 style="">Minutes</h6>
+                                        <input type="number" name="drillDuration" id="changeMinutes" value="{{this.duration}}" min="0" max="1440" class="text-center" style="width: 75px; margin-top: 3px;">
+                                        <div class="row g-1">
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowUp" style="margin-top: 15px; width: 35px; margin-right:5px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Row Up"> 
+                                                <i class="bi bi-caret-up-fill"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowDown" style="margin-top: 15px; width: 35px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Row Down"> 
+                                                <i class="bi bi-caret-down-fill"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h6 style="margin-left: 0px">Start</h6>
+                                        <input name="starttime" id="starttime" type="time" class="text-center" value="{{this.startTime}}">
+                                        <h6 style="margin-left: 0px; margin-top: 5px">End</h6>
+                                        <input name="endtime" id="endtime" type="time" class="text-center" value="{{this.endTime}}">
+                                    </div>
+                                    
+                                </div>
+                            </td>
+                            <td>
+                                <div class="container">
+                                    <div class="row g-1 flex-nowrap" style="overflow-x: scroll; overflow-y: visible;">
+                                        <div class="col-md-auto colsptable">
+                                            <div class="input-group">
+                                                
+                                                <input value="{{this.drill_type}}" type="text" class="form-control" id="typeSelect" name="drillType" placeholder="Drill Type">
+                                                <button class="btn btn-outline-secondary" type="button" id="typebtndropdown">
+                                                    <i class="bi bi-search"></i>
+                                                </button>
+
+                                            </div>
+                                            <div class="input-group">
+                                                
+                                                <input value="{{this.drill_category}}" type="text" class="form-control" id="categorySelect" name="drillCat" placeholder="Drill Category">
+                                                <button class="btn btn-outline-secondary" type="button" id="catbtndropdown">
+                                                    <i class="bi bi-search"></i>
+                                                </button>
+                                                
+                                            </div>
+                                        
+                                            <div class="input-group">
+                                                
+                                                <input value="{{this.drill_name}}" type="text" class="form-control" id="drillSelect" name="drillSelect" placeholder="Drill Name">
+                                                <button class="btn btn-outline-secondary" type="button" id="namebtndropdown">
+                                                    <i class="bi bi-search"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+
+                                        {{#each positions}}
+
+                                            <div class="col-md-auto">
+                                                <div class="card" style="width: 13rem;">
+                                                    <div class="input-group">
+
+                                                        <input value="{{this}}" type="text" class="form-control" id="posSelect" name="posSelect" placeholder="Position">
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-outline-secondary" type="button" id="posbtndropdown">
+                                                                    <i class="bi bi-search"></i>
+                                                                </button>
+                                                                
+                                                            </div>
+
+
+                                                    </div>
+                                                    <div class="row g-0">
+                                                        <div class="col" style="height:125px; overflow: scroll">
+                                                            <div id="playerList" name="playerList">
+                                                                {{#each ../../player_array}}
+                                                                    <div class="form-check" style="margin-left: 5px">
+                                                                        
+                                                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="margin-top: 10px;" >
+                                                                        
+                                                                        <label class="form-check-label" for="flexCheckDefault" style="margin-top: 8px">
+                                                                            {{this.p_name}}
+                                                                        </label>
+                                                                    </div>
+                                                                {{/each}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+
+                                                </div>
+                                            </div >
+                                            
+                                            
+                                        {{/each}}
+
+                                        
+                                    
+
+                                        <div style="width: 20px" id="posBtns">
+                                            <button style="width:30px; height: 30px; margin-top: 1px; margin-left: 2px" type="button" class="btn btn-primary btn-sm" id="addpos"
+                                                data-bs-toggle="tooltip" data-bs-title="Add Position" data-bs-placement="right" data-bs-toggle="button">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" id="deletepos" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Position"
+                                                    style="width:30px; height: 30px; margin-top: 2px; margin-left: 2px">
+                                                <i class="bi bi-x">
+                                                </i>
+                                            </button>
+                                        </div>  
+                                                                        
+                                </div>
+                                </div>
+                            </td>
+                            <td class="col othercolumnsptable">
+                                <div class="row g-0">
+                                    <div class="col" style="margin-left: 10px;">
+                                        <button type="button" id="makeDraw" class="btn btn-light btn-small"><i class="bi bi-pencil"></i>
+                                            New Drawing</button>
+                                        <a id="image" href="/view-draw-drill/edit-plan/{{../planid}}/{{@index}}">
+                                            <img src="{{this.pic_link}}" style="max-width:125px;max-height:225px;">
+                                        </a>
+                                        <input type="hidden" name="drawLinkHidden" id="drawLinkHidden" value="{{this.pic_link}}">
+                                    </div>
+                                    
+                                </div>
+                            </td>
+                            
+                            <td class="col-sm othercolumnsptable">
+                                <div class="row">
+                                    <div class="col">
+                                        <input value="{{this.notes_comments}}" type="text" name="notes" class="form-control" />
+                                    </div>
+                                    
+                                </div>
+                            </td>
+                            <td class="col-sm">
+                                <div>
+                                    <button type="button" class="btn btn-danger btn-sm" id="deleterow" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Row">
+                                        <i class="bi bi-x">
+                                        </i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {{!-- <tr>
+                            <td id='times' class="col-sm" data-sort="">
+                                <div class="row g-0">
+                                    <div class="col text-left">
+                                        <h6 style="">Minutes</h6>
+                                        <input type="number" name="drillDuration" id="changeMinutes"
+                                            value="{{this.duration}}" min="0" max="1440" class="text-center"
+                                            style="margin-right:10px; width:70px; margin-top: 3px">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowUp"
+                                            style="margin-top: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Row Up">
+                                            <i class="bi bi-caret-up-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowDown"
+                                            style="margin-top: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Row Down">
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <h6 style="margin-left: 0px">Start</h6>
+                                        <input name="starttime" type="time" class="text-center"
+                                            value="{{this.startTime}}">
+                                        <h6 style="margin-left: 0px; margin-top: 5px">End</h6>
+                                        <input name="endtime" type="time" class="text-center" value="{{this.endTime}}">
+                                    </div>
+                                    <div class="col">
+                                    </div </div>
+                            </td>
+                            <td class="col" style="">
+                                <div class="container">
+                                    <div class="row g-0">
+                                        <div class="col">
+                                            <input value="{{this.drill_type}}" type="text" class="form-control"
+                                                id="typeSelect" name="drillType" placeholder="Drill Type"
+                                                style="width: 100%">
+                                            <select style="width: 100%; height: 40px;" class="custom-select"
+                                                id="drillTypeSelect">
+                                                <option>Drill Types</option>
+                                                <option value="">----------------</option>
+                                                {{#each ../drill_array}}
+                                                <option value="{{this.dr_type}}">{{this.dr_type}}</option>
+                                                {{/each}}
+                                                <option value="">----------------</option>
+                                                <option value="Offense - Infield">Offense - Infield</option>
+                                                <option value="Defense - Infield">Defense - Infield</option>
+                                                <option value="Offense - Outfield">Offense - Outfield</option>
+                                                <option value="Defense - Outfield">Defense - Outfield</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col" style="margin-left: 15px;">
+                                            <input value="{{this.drill_category}}" type="text" class="form-control"
+                                                id="categorySelect" name="drillCategory" placeholder="Drill Category"
+                                                style="width: 100%">
+                                            <select style="width: 100%; height: 40px;" class="custom-select"
+                                                id="drillCatSelect">
+                                                <option>Drill Categories</option>
+                                                <option value="">----------------</option>
+                                                {{#each ../drill_array}}
+                                                <option value="{{this.dr_cat}}">{{this.dr_cat}}</option>
+                                                {{/each}}
+                                                <option value="">----------------</option>
+                                                <option value="Pitching">Pitching</option>
+                                                <option value="Hitting">Hitting</option>
+                                                <option value="Catching">Catching</option>
+                                                <option value="Throwing">Throwing</option>
+                                                <option value="Bunting">Bunting</option>
+                                                <option value="Baserunning">Baserunning</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-sm">
+                                <div class="row g-0">
+                                    <div class="col">
+                                        <input value="{{this.drill_name}}" type="text" class="form-control"
+                                            id="drillSelect" name="drillSelect" placeholder="Drill Name"
+                                            style="width: 100%">
+                                        <select class="custom-select" id="drillNameSelect"
+                                            style="width: 100%; height: 40px;">
+                                            <option>Drill Names</option>
+                                            <option value="">----------------</option>
+                                            {{#each ../drill_array}}
+                                            <option value="{{this.dr_name}}">{{this.dr_name}}</option>
+                                            {{/each}}
+                                            <option value="">----------------</option>
+                                            <option value="Up The Middle">Up The Middle</option>
+                                            <option value="Fence">Fence</option>
+                                            <option value="Tee">Tee</option>
+                                            <option value="Sacrifice Bunting">Sacrifice Bunting</option>
+                                            <option value="Shallow Fly Balls">Shallow Fly Balls</option>
+                                            <option value="Delayed Steal">Delayed Steal</option>
+                                            <option value="Pick-up">Pick-up</option>
+                                            <option value="Pitching Accuracy">Pitching Accuracy</option>
+                                            <option value="Fielding Bunts">Fielding Bunts</option>
+                                            <option value="Blocking">Blocking</option>
+                                            <option value="Throwing to Second">Throwing to Second</option>
+                                            <option value="First Base - Bad Throw">First Base - Bad Throw</option>
+                                            <option value="Ground Ball">Ground Ball</option>
+                                            <option value="Infield Rotation">Infield Rotation</option>
+                                            <option value="Short-Hop">Short-Hop</option>
+                                            <option value="Bucket of Balls">Bucket of Balls</option>
+                                            <option value="Drop Step">Drop Step</option>
+                                            <option value="One Knee">One Knee</option>
+                                            <option value="Scrimmage">Scrimmage</option>
+                                            <option value="Pitch Trajectory">Pitch Trajectory</option>
+                                            <option value="Fly Ball Communication">Fly Ball Communication</option>
+                                        </select>
+                                    </div>
+                                    <div class="col" style="margin-left: 10px;">
+                                        <button type="button" id="makeDraw" class="btn btn-light btn-small"><i
+                                                class="bi bi-pencil"></i>
+                                            New Drawing</button>
+                                        <a id="image" href="/view-draw-drill/edit-plan/{{../planid}}/{{@index}}">
+                                            <img src="{{this.pic_link}}" style="max-width:125px;max-height:225px;"
+                                                id="insertpiclink">
+                                        </a>
+                                    </div>
+
+                                </div>
+                                <input type="hidden" name="drawLinkHidden" id="drawLinkHidden"
+                                    value="{{this.pic_link}}">
+                            </td>
+                            <td class="col-sm">
+                                <div class="row">
+                                    <div class="col">
+                                        <select name="playerList" id="playerList" style="height:125px; width:100%"
+                                            onChange="addPlayersTextArea(this, this.closest('tr'))" multiple>
+                                            {{#each ../player_array}}
+                                            <option value="{{this.p_name}}">{{this.p_name}}</option>
+                                            {{/each}}
+
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <textarea cols="40" rows="50" value=""
+                                            style="height:125px; width:100%; white-space: pre-wrap;" class=""
+                                            id="inputPlayer" name="inputPlayer"
+                                            placeholder="Players">{{this.player_name}}</textarea>
+                                    </div>
+
+                                </div>
+                            </td>
+                            <td class="col-sm">
+                                <div class="row">
+                                    <div class="col">
+                                        <input value="{{this.notes_comments}}" type="text" name="notes"
+                                            class="form-control" />
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="col-sm">
+                                <div>
+                                    <button type="button" class="btn btn-danger btn-sm" id="deleterow"
+                                        data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Row">
+                                        <i class="bi bi-x">
+                                        </i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr> --}}
+                        {{/each}}
+                        
+                        {{#each positionsArray}}
+                        {{#each assignedPlayers}}
+                        
+                        <input type="hidden" name="playerName" value="{{this}}" id="checked_players">
+                        
+                        {{/each}}
+                        {{/each}}
+
+                        {{#each positionsArray}}
+                        {{#each positions}}
+                        
+                        <input type="hidden" name="positionName" value="{{this}}" id="positionnames">
+                        
+                        {{/each}}
+                        {{/each}}
+                        
+                    </tbody>
+
+                </table>
+            </div>
+
+
+            <div class="mx-5 d-flex justify-content-between">
+                <button style="width:50px" type="button" class="btn btn-primary btn-sm" id="addrow"
+                    data-bs-toggle="tooltip" data-bs-title="Add Row" data-bs-placement="top" data-bs-toggle="button">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+                <button type="submit" class="btn btn-block btn-success btn-lg" id="save" data-bs-toggle="tooltip"
+                    data-bs-title="Update Plan">
+                    SAVE
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="statsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for drill types instead of the dropdown list-->
+    <div class="modal fade" tabindex="-1" id="typesModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Choose a Drill Type</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex" style="justify-content: space-between">
+
+                        <div>
+                            <h5 style="margin-left: 10px;">Your Drills</h5>
+                            <hr></hr>
+                            {{#if drill_array}}
+                                {{#each drill_array}}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                        {{this.dr_type}}
+                                    </label>
+                                </div>
+                                {{/each}}
+                            {{/if}}
+                        </div>
+
+                        
+                        <div>
+                            <h5>Suggested Drills</h5>
+                            <hr></hr>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Offense - Infield
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Defense - Infield
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Offense - Outfield
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Defense - Outfield
+                                </label>
+                            </div>
+                            
+
+                            
+                        </div>
+                    </div>
+                                                
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="typeOKModal">OK</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for drill categories instead of the dropdown list, same as typesModal-->
+    <div class="modal fade" tabindex="-1" id="catsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Choose a Drill Category</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex" style="justify-content: space-between">
+
+                        <div>
+                            <h5 style="margin-left: 10px;">Your Drills</h5>
+                            <hr></hr>
+                            {{#if drill_array}}
+                                {{#each drill_array}}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                        {{this.dr_cat}}
+                                    </label>
+                                </div>
+                                {{/each}}
+                            {{/if}}
+                        </div>
+
+                        
+                        <div>
+                            <h5>Suggested Drills</h5>
+                            <hr></hr>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Pitching
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Hitting
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Catching
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Fielding
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Baserunning
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Conditioning
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Strength
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Throwing
+                                </label>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                                                
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="catOKModal">OK</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for drill names instead of the dropdown list, same as typesModal-->
+    <div class="modal fade" tabindex="-1" id="namesModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Choose a Drill Name</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex" style="justify-content: space-between">
+
+                        <div>
+                            <h5 style="margin-left: 10px;">Your Drills</h5>
+                            <hr></hr>
+                            {{#if drill_array}}
+                                {{#each drill_array}}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                    <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                        {{this.dr_name}}
+                                    </label>
+                                </div>
+                                {{/each}}
+                            {{/if}}
+                        </div>
+
+                        
+                        <div>
+                            <h5>Suggested Drills</h5>
+                            <hr></hr>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Up The Middle
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Down The Line
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Shallow Fly Balls
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Deep Fly Balls
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Bunt Defense
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Bunt Offense
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Ground Balls
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Pop Ups
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Double Play Defense
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Double Play Offense
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Triple Play Defense
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Triple Play Offense
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Stealing
+                                </label>
+                            </div>
+                            
+
+                            
+                        </div>
+                    </div>
+                                                
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="nameOKModal">OK</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for positions -->
+    <div class="modal fade" tabindex="-1" id="posModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Choose a Position</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div >
+
+                        
+                        <div>
+                            <h5>Suggested Positions</h5>
+                            <hr></hr>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Catcher
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    First Base
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Second Base
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Third Base
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Shortstop
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Left Field
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Center Field
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Right Field
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                                <label class="form-check-label" for="flexRadioDefault1" style="margin-top: 25px;">
+                                    Pitcher
+                                </label>
+                            </div>
+                            
+
+                            
+                        </div>
+                    </div>
+                                                
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="posOKModal">OK</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).keypress(
+            function (event) {
+                if (event.which == '13') {
+                    event.preventDefault();
+                }
+            });
+        $(document).ready(function () {
+            //let planDate = new Date().toISOString().split('T')[0]
+            //$('#planDate').html(`<input type="date" class="col-sm-1" value="${planDate}">`)
+            var cur_url = window.location.href
+            //var displaytext = cur_url.split("=")[1].replaceAll("%20", " ")
+            //$('#currentTeamText').text("Current Team: " + displaytext)
+
+            //$('#chooseTeamHidden').val(cur_url.split("/")[4])
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            var num_rows = 0
+            $('#plantable > tbody > tr').each(function () {
+                var image_link = $(this).find('img').attr("src")
+                if (image_link.includes('png')) {
+                    localStorage.setItem(`editplan_pic${num_rows}`, image_link)
+                }
+                num_rows += 1
+            })
+            localStorage.setItem("num_row", num_rows)
+
+            $('#planid').val(cur_url.split('/')[4])
+
+            
+            
+            
+        })
+        $('#save').click(function () {
+            // save team_selection even after local storage clear, so user doesn't have to keep choosing the team
+            //var team_selection = localStorage.getItem("team_select")
+            var i = 0
+            $('#plantable > tbody > tr').each(function () {
+                localStorage.setItem(`editplan_pic${i}`, null)
+                i += 1
+            })
+            //localStorage.setItem("team_select", team_selection)
+        })
+        
+        function submitForm() {
+            var position_players_list = []
+            $('#plantable > tbody > tr').each(function () {
+                // get all checked players' labels and store them in the hidden input field for submission
+                //var player_list = $(this).find($("#flexCheckDefault:checked")).next().text()
+
+                // each row will have a different hidden input field that is an array of players for that row
+                // index 0 is position 0 with playerlist 0, index 1 is position 1 with playerlist 1, etc.
+                // create a dictionary for each row with the position as the key and the playerlist as the value
+                // create a list of all the dictionaries for each row
+                // store the list in the hidden input field for submission
+
+                var position_players = {}
+                $(this).find('.card').each(function () {
+                    var position = $(this).find('#posSelect').val()
+                    var player_list = $(this).find($("#flexCheckDefault:checked")).next().text()
+                    // format the text to be a list of players
+                    player_list = player_list.split("\n")
+                    // remove white space and quotes and empty strings
+                    player_list = player_list.map(player => player.trim().replaceAll('"', ''))
+                    player_list = player_list.filter(player => player != "")
+
+                    position_players[position] = player_list
+                })
+
+                position_players_list.push(position_players)
+
+            })
+            // print the object in a readable format
+            console.log(JSON.stringify(position_players_list, null, 2))
+            // store the object in the hidden input field
+            $('input[name="positionPlayersSubmit"]').val(JSON.stringify(position_players_list))
+
+            $('#planForm').submit()
+        }
+
+        function clearStatsForModal() {
+            $('.modal-body').html("")
+            updateStats()
+        }
+
+        function updateStats() {
+            var num_rows = localStorage.getItem("num_row")
+            console.log(num_rows)
+            if (Number(num_rows) > 0) {
+                var i = 0
+                var drills_mins = []
+
+                $('#plantable > tbody > tr').each(function () {
+                    console.log('here')
+                    var drill_type = $(this).find('td').eq(1).find('input').eq(0).val()
+                    var drill_cat = $(this).find('td').eq(1).find('input').eq(1).val()
+                    var minutes = Number($(this).find('td').eq(0).find('input').eq(0).val())
+
+
+                    if (drill_type !== '') {
+                        drills_mins.push({
+                            'name': drill_type,
+                            'value': minutes
+                        })
+                    }
+                    if (drill_cat !== '') {
+                        drills_mins.push({
+                            'name': drill_cat,
+                            'value': minutes
+                        })
+                    }
+
+                    i += 1
+                })
+
+                var temp = {};
+
+                drills_mins.forEach(function (data) {
+                    if (temp.hasOwnProperty(data.name)) {
+                        temp[data.name] = temp[data.name] + data.value;
+                    }
+                    else {
+                        temp[data.name] = data.value;
+                    }
+                })
+
+
+                var summed_drills = []
+
+                for (var prop in temp) {
+                    summed_drills.push({ drill: prop, total_min: temp[prop] })
+                }
+
+                summed_drills.sort((a, b) => b.total_min - a.total_min)
+
+                // display top 4 types/categories
+                summed_drills.forEach((drills, index) => {
+                    if (index < 4) {
+                        $(document).find('h6').eq(index + 1).html(`${drills['drill']}:
+                        <strong>${drills['total_min']} min</strong>`)
+                        $(`#stats_drill_${index + 1}`).val(`${drills['drill']}: ${drills['total_min']} min`)
+                    }
+                    else {
+                        $('.modal-body').append(`<h6>${drills['drill']}:
+                        <strong>${drills['total_min']} min</strong></h6>`)
+                    }
+                })
+
+            }
+        }
+
+        /*
+    window.onbeforeunload = function () {
+        
+        //return "You have not saved this plan. Leaving the page will result in a loss of all current progress."
+        localStorage.setItem("plantitle", $('#title').val())
+        localStorage.setItem("plan_date", document.querySelector('input[type="date"]').value)
+        localStorage.setItem("plan_start_time", $('#planStartTime').val())
+        var i = 0;
+        $('#plantable > tbody > tr').each(function () {
+            var starttime = $(this).find('td').eq(0).find('input').eq(1).val()
+            var endtime = $(this).find('td').eq(0).find('input').eq(2).val()
+            var minutes = $(this).find('td').eq(0).find('input').eq(0).val()
+            var drillType = $(this).find('td').eq(1).find('input').eq(0).val().trim();
+            var drillCat = $(this).find('td').eq(1).find('input').eq(1).val().trim();
+            var drillName = $(this).find('td').eq(2).find("input").val().trim()
+            var playerName = $(this).find('td').eq(3).find("textarea").val()
+            var notes = $(this).find('td').eq(4).find("input").val()
+            localStorage.setItem(`starttime${i}`, starttime);
+            localStorage.setItem(`endtime${i}`, endtime);
+            localStorage.setItem(`minutes${i}`, minutes)
+            localStorage.setItem(`drillType${i}`, drillType);
+            localStorage.setItem(`drillCategory${i}`, drillCat);
+            localStorage.setItem(`drillName${i}`, drillName);
+            localStorage.setItem(`playerNames${i}`, playerName);
+            localStorage.setItem(`notes${i}`, notes);
+            i += 1;
+        })
+    }
+
+        */
+
+        window.onload = function () {
+
+            var players_for_positions = $('input[name="playerName"]').map(function () {
+                return this.value;
+            }).get();
+            
+            var positions = $('input[name="positionName"]').map(function () {
+                return this.value;
+            }).get();
+
+            // the length of the positions array is the number of position cards in the entire table
+            // for each position card, check each box where the player name matches the player name in the players_for_positions array
+            // if the player name matches, check the box
+            // for each player_names, add it to an array as its own index
+            
+            for (var k = 0; k < players_for_positions.length; k++) { // number of player lists for each row
+                //split names by comma into their own array
+                players_for_positions[k] = players_for_positions[k].split(',')
+                
+                for (var l = 0; l < players_for_positions[k].length; l++) { // list of players for this position in this row
+                    console.log(players_for_positions[k][l])
+                    $('#plantable').find('.card').find('#playerList').eq(k).children().find('#flexCheckDefault').each(function () {
+                        //console.log($(this).parent().parent().index())
+                        if ($(this).parent().find('label').text().trim() == players_for_positions[k][l]) {
+                            //console.log(players[k][l])
+                            //console.log($(this).parent().find('label').text().trim(), players[k][l])
+                            $(this).prop('checked', true)
+                        }
+                    })   
+                }
+            }
+
+            var j = 0
+            $('#plantable > tbody > tr').each(function () {
+                var pic_link = localStorage.getItem(`editplan_pic${j}`)
+
+                if (pic_link !== null) {
+                    if (pic_link.includes("png")) {
+                        $(this).find('img').attr("src", pic_link)
+                        $(this).find('#drawLinkHidden').val(pic_link)
+                        //console.log($(this).find('#drawLinkHidden').val())
+                    }
+                }
+
+
+                j += 1
+            })
+            updateStats()
+        }
+        /*
+    
+        // var team_selection = localStorage.getItem("team_select")
+        // $('#chooseTeam').find(":selected").text(team_selection)
+        var team_selected = Number(localStorage.getItem("team_id"))
+        $(`#teamSelect option[value='${team_selected}']`).attr("selected", "selected")
+
+        $('#title').val(localStorage.getItem("plantitle"))
+        document.querySelector('input[type="date"]').value = localStorage.getItem("plan_date")
+        
+         if (localStorage.getItem("plan_start_time") !== "") {
+            $('#planStartTime').val(localStorage.getItem("plan_start_time"))
+         }
+         else {
+            $('#planStartTime').val("18:00")
+         }
+
+        
+        var num_rows = localStorage.getItem("num_rows")
+        for (let i = 0; i < num_rows; i++) {
+            var starttime = localStorage.getItem(`starttime${i}`);
+            var endtime = localStorage.getItem(`endtime${i}`);
+            var minutes = localStorage.getItem(`minutes${i}`);
+            var drillType = localStorage.getItem(`drillType${i}`);
+            var drillCat = localStorage.getItem(`drillCategory${i}`);
+            var drillName = localStorage.getItem(`drillName${i}`);
+            var playerName = localStorage.getItem(`playerNames${i}`);
+            var notes = localStorage.getItem(`notes${i}`);
+            var pic = localStorage.getItem(`pic${i}`);
+            $('#plantable').append(`<tr>
+                    <td id='times' class="col-sm" data-sort="">
+                        <div class="row g-0">
+                            <div class="col text-left">
+                                <h6 style="">Minutes</h6>
+                                <input type="number" name="drillDuration" id="changeMinutes" value="${minutes}" min="0" max="1440" class="text-center" style="margin-right:10px; width:70px; margin-top: 3px">
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowUp" style="margin-top: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Row Up"> 
+                                    <i class="bi bi-caret-up-fill"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowDown" style="margin-top: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Row Down"> 
+                                    <i class="bi bi-caret-down-fill"></i>
+                                </button>
+                            </div>
+                            <div class="col">
+                                <h6 style="margin-left: 0px">Start</h6>
+                                <input name="starttime" type="time" class="text-center" value="${starttime}">
+                                <h6 style="margin-left: 0px; margin-top: 5px">End</h6>
+                                <input name="endtime" type="time" class="text-center" value="${endtime}">
+                            </div>
+                            <div class="col">
+                            </div
+                        </div>
+                    </td>
+                    <td class="col" style="">
+                        <div class="container">
+                            <div class="row g-0">
+                                <div class="col">
+                                    <input value="${drillType}" type="text" class="form-control" id="typeSelect" name="drillType" placeholder="Drill Type" style="width: 100%">
+                                    <select style="width: 100%" class="custom-select" id="drillTypeSelect">
+                                        <option>Drill Types</option>
+                                        <option value="">----------------</option>
+                                        {{#each drillVal}}
+                                        <option value="{{this.Dr_Type}}">{{this.Dr_Type}}</option>
+                                        {{/each}}
+                                        <option value="">----------------</option>
+                                        <option value="Offense">Offense</option>
+                                        <option value="Defense">Defense</option>
+                                        <option value="Infield">Infield</option>
+                                        <option value="Outfield">Outfield</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col" style="margin-left: 15px;">
+                                    <input value="${drillCat}" type="text" class="form-control" id="categorySelect" name="drillCategory" placeholder="Drill Category" style="width: 100%">
+                                    <select style="width: 100%" class="custom-select" id="drillCatSelect">
+                                        <option>Drill Categories</option>
+                                        <option value="">----------------</option>
+                                        {{#each drillVal}}
+                                        <option value="{{this.Dr_Category}}">{{this.Dr_Category}}</option>
+                                        {{/each}}
+                                        <option value="">----------------</option>
+                                        <option value="Pitching">Pitching</option>
+                                        <option value="Hitting">Hitting</option>
+                                        <option value="Catching">Catching</option>
+                                        <option value="Throwing">Throwing</option>
+                                        <option value="Bunting">Bunting</option>
+                                        <option value="Baserunning">Baserunning</option>
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col-sm">
+                        <div class="row g-0">
+                            <div class="col">
+                                <input value="${drillName}" type="text" class="form-control" id="drillSelect" name="drillSelect" placeholder="Drill Name" style="width: 100%">
+                                <select class="custom-select" id="drillNameSelect" style="width: 100%">
+                                    <option>Drill Names</option>
+                                    <option value="">----------------</option>
+                                    {{#each drillVal}}
+                                    <option value="{{this.Dr_Name}}">{{this.Dr_Name}}</option>
+                                    {{/each}}
+                                    <option value="">----------------</option>
+                                    <option value="Up The Middle">Up The Middle</option>
+                                    <option value="Fence">Fence</option>
+                                    <option value="Tee">Tee</option>
+                                    <option value="Sacrifice Bunting">Sacrifice Bunting</option>
+                                    <option value="Shallow Fly Balls">Shallow Fly Balls</option>
+                                    <option value="Delayed Steal">Delayed Steal</option>
+                                    <option value="Pick-up">Pick-up</option>
+                                    <option value="Pitching Accuracy">Pitching Accuracy</option>
+                                    <option value="Fielding Bunts">Fielding Bunts</option>
+                                    <option value="Blocking">Blocking</option>
+                                    <option value="Throwing to Second">Throwing to Second</option>
+                                    <option value="First Base - Bad Throw">First Base - Bad Throw</option>
+                                    <option value="Ground Ball">Ground Ball</option>
+                                    <option value="Infield Rotation">Infield Rotation</option>
+                                    <option value="Short-Hop">Short-Hop</option>
+                                    <option value="Bucket of Balls">Bucket of Balls</option>
+                                    <option value="Drop Step">Drop Step</option>
+                                    <option value="One Knee">One Knee</option>
+                                    <option value="Scrimmage">Scrimmage</option>
+                                    <option value="Pitch Trajectory">Pitch Trajectory</option>
+                                    <option value="Fly Ball Communication">Fly Ball Communication</option>
+                                </select>
+                            </div>
+                            <div class="col" style="margin-left: 10px;">
+                                <button type="button" id="makeDraw" class="btn btn-light btn-small"><i class="bi bi-pencil"></i>
+                                    New Drawing</button>
+                                <a id="image" href="/view-draw-drill/${team_selected.toString()}/${i}">
+                                    <img src="" style="max-width:125px;max-height:225px;">
+                                </a>
+                            </div>
+                            
+                        </div>
+                        <input type="hidden" name="drawLinkHidden" id="drawLinkHidden">
+                    </td>
+                    <td class="col-sm">
+                        <div class="row">
+                            <div class="col">
+                                <select name="playerList" id="playerList" style="height:125px; width:100%" onChange="addPlayersTextArea(this, this.closest('tr'))" multiple>
+                                    {{#each playerVal}}
+                                    <option value="{{this.P_Name}}">{{this.P_Name}}</option>
+                                    {{/each}}
+                                    
+                                </select>
+                            </div>
+                            <div class="col">
+                                <textarea cols="40" rows="50" value="${playerName}" style="height:125px; width:100%; white-space: pre-wrap;" class="" id="inputPlayer" name="inputPlayer" placeholder="Players"></textarea>
+                            </div>
+                            
+                        </div>
+                    </td>
+                    <td class="col-sm">
+                        <div class="row">
+                            <div class="col">
+                                <input value="${notes}" type="text" name="notes" class="form-control" />
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col-sm">
+                        <div>
+                            <button type="button" class="btn btn-danger btn-sm" id="deleterow" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Row">
+                                <i class="bi bi-x">
+                                </i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`);
+            // change val of input fields for players and notes
+            $('#plantable > tbody > tr').last().find('td').eq(3).find("textarea").val(playerName)
+            //$('#plantable > tbody > tr').last().find('td').eq(4).find("input").val(notes)
+            // hidden fields for POST
+            // $('#chooseTeamHidden').val(team_selection)
+            var pic_link = localStorage.getItem(`pic${i}`)
+            if (pic_link !== null) {
+                $('#plantable > tbody > tr').last().find("#drawLinkHidden").val(pic_link)
+                $('#plantable > tbody > tr').last().find('img').attr("src", pic_link)
+            }
+
+
+        }
+        
+        
+    }
+    */
+
+        $('#teamSelect').on("change", function () {
+            if (confirm("This will erase all current data for this plan. Continue?") == true) {
+                var i = 0
+                $('#plantable > tbody > tr').each(function () {
+                    $(this).find('td').eq(0).find('input').eq(1).val("")
+                    $(this).find('td').eq(0).find('input').eq(2).val("")
+                    $(this).find('td').eq(0).find('input').eq(0).val("15")
+                    $(this).find('td').eq(1).find('input').eq(0).val("");
+                    $(this).find('td').eq(1).find('input').eq(1).val("");
+                    $(this).find('td').eq(2).find("input").val("")
+                    $(this).find('td').eq(2).find("img").src = ""
+                    localStorage.setItem(`pic${i}`, "")
+                    $(this).find('td').eq(3).find("textarea").val("")
+                    $(this).find('td').eq(4).find("input").val("")
+                    i += 1
+                })
+
+                var team_id_selected = $(this).find(":selected").val()
+                var new_url = window.location.href
+                new_url = new_url.replace(/\d+$/, team_id_selected)
+                localStorage.setItem("team_id", team_id_selected)
+                window.location.href = new_url
+            }
+        })
+
+        $("#plantable").on("click", "#makeDraw", function () {
+
+            var current_url = window.location.href
+            var team_id = $('#teamid').val()
+            var plan_id = current_url.split("/")[4]
+            var row_id = $(this).closest("tr").index()
+            window.location.assign(current_url.split("/")[0] + "/draw-drill/edit-plan/" + plan_id + "/" + team_id + "/" + row_id)
+
+        })
+
+        $("#timeOK").click(function () {
+            let starttime = $('#planStartTime').val();
+            var hours_start;
+            var hours_end;
+            var minutes_start;
+            var minutes_end;
+            var endtime;
+            $("#plantable > tbody > tr").each(function (i = 0, e) {
+                const splittime = starttime.split(":");
+                hours_start = splittime[0];
+                minutes_start = splittime[1];
+                minutes_end = Number(minutes_start) + 15;
+                hours_end = hours_start
+                if (minutes_end >= 60) {
+                    minutes_end = minutes_end % 60
+                    if (minutes_end.toString().length == 1) {
+                        minutes_end = minutes_end.toString().padStart(2, '0');
+                    }
+                    hours_end = Number(hours_start) + 1
+                    if (hours_end > 24) {
+                        hours_end = 0;
+                    }
+                    if (hours_end.toString().length == 1) {
+                        hours_end = hours_end.toString().padStart(2, '0');
+                    }
+                    console.log(hours_end, minutes_end)
+                }
+                endtime = String(hours_end) + ":" + String(minutes_end);
+                $(this).find('td').eq(0).find('input').eq(1).val(starttime);
+                $(this).find('td').eq(0).find('input').eq(2).val(endtime);
+                starttime = endtime;
+            })
+        })
+        $("#plantable").on("click", "#deleterow", function () {
+                $('[data-bs-toggle="tooltip"]').tooltip("hide");
+                var num_rows = Number(localStorage.getItem("num_rows"))
+                num_rows -= 1;
+                localStorage.setItem("num_rows", num_rows)
+                var row_index = $(this).closest("tr").index()
+                localStorage.removeItem(`starttime${row_index}`);
+                localStorage.removeItem(`endtime${row_index}`);
+                localStorage.removeItem(`minutes${row_index}`);
+                localStorage.removeItem(`drillType${row_index}`);
+                localStorage.removeItem(`drillCategory${row_index}`);
+                localStorage.removeItem(`drillName${row_index}`);
+                localStorage.removeItem(`playerNames${row_index}`);
+                localStorage.removeItem(`notes${row_index}`);
+                localStorage.removeItem(`pic${row_index}`);
+                $(this).closest("tr").remove();
+                updateStats();
+        });
+        $('#addrow').click(function () {
+                $('[data-bs-toggle="tooltip"]').tooltip("hide");
+                $('#plantable').append(`<tr>
+                        <td id='times' class="othercolumnsptable">
+                            <div class="row g-0">
+                                <div class="col">
+                                    <h6 style="">Minutes</h6>
+                                    <input type="number" value="15" name="drillDuration" id="changeMinutes" min="0" max="1440" class="text-center" style="width: 75px; margin-top: 3px;">
+                                    <div class="row g-1">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowUp" style="margin-top: 15px; width: 35px; margin-right:5px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Row Up"> 
+                                            <i class="bi bi-caret-up-fill"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="moveRowDown" style="margin-top: 15px; width: 35px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Row Down"> 
+                                            <i class="bi bi-caret-down-fill"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h6 style="margin-left: 0px">Start</h6>
+                                    <input name="starttime" id="starttime" type="time" class="text-center">
+                                    <h6 style="margin-left: 0px; margin-top: 5px">End</h6>
+                                    <input name="endtime" id="endtime" type="time" class="text-center">
+                                </div>
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <div class="container">
+                                <div class="row g-1 flex-nowrap" style="overflow-x: scroll; overflow-y: visible;">
+                                    <div class="col-md-auto colsptable">
+                                        <div class="input-group">
+                                            
+                                            <input type="text" class="form-control" id="typeSelect" name="drillType" placeholder="Drill Type">
+                                            <button class="btn btn-outline-secondary" type="button" id="typebtndropdown">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                            {{!-- <ul class="dropdown-menu dropdown-menu-end" id="dropdownlisttype">
+                                                {{#if drillVal}}
+                                                    {{#each drillVal}}
+                                                        <li> <a class="dropdown-item">{{this.Dr_Type}}</a></li>
+                                                    {{/each}}
+                                                    <li> <a class="dropdown-item" >---------------------</a></li>
+                                                {{/if}}
+                                                <li> <a class="dropdown-item" >Offense - Infield</a></li>
+                                                <li> <a class="dropdown-item" >Defense - Infield</a></li>
+                                                <li> <a class="dropdown-item" >Offense - Outfield</a></li>
+                                                <li> <a class="dropdown-item" >Defense - Outfield</a></li>
+                                                
+                                            </ul> --}}
+                                        </div>
+                                        <div class="input-group">
+                                            
+                                            <input type="text" class="form-control" id="categorySelect" name="drillCat" placeholder="Drill Category">
+                                            <button class="btn btn-outline-secondary" type="button" id="catbtndropdown">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                            {{!-- <ul class="dropdown-menu dropdown-menu-end">
+                                                {{#if drillVal}}
+                                                    {{#each drillVal}}
+                                                        <li> <a class="dropdown-item">{{this.Dr_Category}}</a></li>
+                                                    {{/each}}
+                                                    <li> <a class="dropdown-item" >---------------------</a></li>
+                                                {{/if}}
+                                                <li> <a class="dropdown-item" >Pitching</a></li>
+                                                <li> <a class="dropdown-item" >Hitting</a></li>
+                                                <li> <a class="dropdown-item" >Catching</a></li>
+                                                <li> <a class="dropdown-item" >Throwing</a></li>
+                                                <li> <a class="dropdown-item" >Baserunning</a></li>
+                                                <li> <a class="dropdown-item" >Fielding</a></li>
+                                                <li> <a class="dropdown-item" >Conditioning</a></li>
+
+                                                
+                                            </ul> --}}
+                                        </div>
+                                    
+                                        <div class="input-group">
+                                            
+                                            <input type="text" class="form-control" id="drillSelect" name="drillSelect" placeholder="Drill Name">
+                                            <button class="btn btn-outline-secondary" type="button" id="namebtndropdown">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                            {{!-- <ul class="dropdown-menu dropdown-menu-end">
+                                                {{#if drillVal}}
+                                                    {{#each drillVal}}
+                                                        <li> <a class="dropdown-item">{{this.Dr_Name}}</a></li>
+                                                    {{/each}}
+                                                    <li> <a class="dropdown-item" >---------------------</a></li>
+                                                {{/if}}
+                                                <li> <a class="dropdown-item" >Up The Middle</a></li>
+                                                <li> <a class="dropdown-item" >Down The Line</a></li>
+                                                <li> <a class="dropdown-item" >Shallow Fly Balls</a></li>
+                                                <li> <a class="dropdown-item" >Deep Fly Balls</a></li>
+                                                <li> <a class="dropdown-item" >Ground Balls</a></li>
+                                                <li> <a class="dropdown-item" >Pop Ups</a></li>
+                                                <li> <a class="dropdown-item" >Bunt Defense</a></li>
+                                                <li> <a class="dropdown-item" >Double Play Defense</a></li>
+                                                <li> <a class="dropdown-item" >Triple Play Defense</a></li>
+                                                <li> <a class="dropdown-item" >Double Play Offense</a></li>
+                                                <li> <a class="dropdown-item" >Triple Play Offense</a></li>
+                                                <li> <a class="dropdown-item" >Bunt Offense</a></li>
+                                                <li> <a class="dropdown-item" >Stealing</a></li>
+
+                                                
+                                            </ul> --}}
+                                        </div>
+                                    </div>
+
+                                    
+
+
+                                    <div style="width: 20px" id="posBtns">
+                                        <button style="width:30px; height: 30px; margin-top: 1px; margin-left: 2px" type="button" class="btn btn-primary btn-sm" id="addpos"
+                                            data-bs-toggle="tooltip" data-bs-title="Add Position" data-bs-placement="right" data-bs-toggle="button">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" id="deletepos" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Position"
+                                                style="width:30px; height: 30px; margin-top: 2px; margin-left: 2px">
+                                            <i class="bi bi-x">
+                                            </i>
+                                        </button>
+                                    </div>  
+                                                                      
+                               </div>
+                            </div>
+                        </td>
+                        <td class="col othercolumnsptable">
+                            <div class="row g-0">
+                                <div class="col" style="margin-left: 10px;">
+                                    <button type="button" id="makeDraw" class="btn btn-light btn-small"><i class="bi bi-pencil"></i>
+                                        New Drawing</button>
+                                    <a id="image" href="#">
+                                        <img src="" style="max-width:225px;max-height:425px;">
+                                    </a>
+                                    <input type="hidden" name="drawLinkHidden" id="drawLinkHidden">
+                                </div>
+                                
+                            </div>
+                        </td>
+                        
+                        <td class="col-sm othercolumnsptable">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" name="notes" class="form-control" />
+                                </div>
+                                
+                            </div>
+                        </td>
+                        <td class="col-sm">
+                            <div>
+                                <button type="button" class="btn btn-danger btn-sm" id="deleterow" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Row">
+                                    <i class="bi bi-x">
+                                    </i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr >`);
+
+                window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+                var num_rows = Number(localStorage.getItem("num_rows"))
+                num_rows += 1;
+                localStorage.setItem("num_rows", num_rows)
+                // get previous row's end time, to set the new row's start time
+                var prev_end_time = $('#plantable > tbody').find('tr').eq(-2).find('td').eq(0).find('input').eq(2).val()
+                console.log(prev_end_time)
+                prev_hours_end = prev_end_time.split(":")[0];
+                prev_minutes_end = prev_end_time.split(":")[1];
+                var minutes_new = Number(prev_minutes_end) + 15;
+                var hours_new = prev_hours_end
+                if (minutes_new >= 60) {
+                    minutes_new = minutes_new % 60
+                    if (minutes_new.toString().length == 1) {
+                        minutes_new = minutes_new.toString().padStart(2, '0');
+                    }
+                    hours_new = Number(hours_new) + 1
+                    if (hours_new >= 24) {
+                        hours_new = 0;
+                    }
+                    if (hours_new.toString().length == 1) {
+                        hours_new = hours_new.toString().padStart(2, '0');
+                    }
+                }
+                var new_starttime = prev_end_time
+                var new_endtime = String(hours_new) + ":" + String(minutes_new);
+                console.log(new_starttime, new_endtime)
+                $('#plantable > tbody > tr').last().find('td').eq(0).find('input').eq(1).val(new_starttime)
+                $('#plantable > tbody > tr').last().find('td').eq(0).find('input').eq(2).val(new_endtime)
+
+                updateStats();
+            })
+        $('#plantable').on("click", "#moveRowUp", function () {
+            $('[data-bs-toggle="tooltip"]').tooltip("hide");
+            var this_row = $(this).closest("tr")
+            this_row.insertBefore(this_row.prev())
+        })
+        $('#plantable').on("click", "#moveRowDown", function () {
+            $('[data-bs-toggle="tooltip"]').tooltip("hide");
+            var this_row = $(this).closest("tr")
+            this_row.insertAfter(this_row.next())
+        })
+        $('#plantable').on("change", "#changeMinutes", function () {
+            var start_time = $(this).closest('tr').find('td').eq(0).find('input').eq(1).val()
+            var start_time_minutes = start_time.split(':')[1]
+            var start_time_hours = start_time.split(':')[0]
+            var end_time = $(this).closest('tr').find('td').eq(0).find('input').eq(2).val()
+            var end_time_minutes = end_time.split(':')[1]
+            var end_time_hours = end_time.split(':')[0]
+            end_time_minutes = Number(start_time_minutes) + Number($(this).val());
+            var old_end_time_minutes = Number(end_time_minutes)
+            if (end_time_minutes >= 60) {
+                end_time_minutes = end_time_minutes % 60
+                if (end_time_minutes.toString().length == 1) {
+                    end_time_minutes = end_time_minutes.toString().padStart(2, '0');
+                }
+                end_time_hours = Number(start_time_hours) + (Math.floor(old_end_time_minutes / 60))
+                if (end_time_hours > 24) {
+                    end_time_hours = end_time_hours % 24;
+                }
+                if (end_time_hours.toString().length == 1) {
+                    end_time_hours = end_time_hours.toString().padStart(2, '0');
+                }
+            }
+            if (end_time_minutes < 10) {
+                end_time_minutes = end_time_minutes.toString().padStart(2, '0');
+            }
+            if (old_end_time_minutes < 60) {
+                end_time_hours = start_time_hours
+            }
+            var new_endtime = String(end_time_hours) + ":" + String(end_time_minutes);
+            $(this).closest('tr').find('td').eq(0).find('input').eq(2).val(new_endtime)
+
+            updateStats()
+        })
+
+        var row_for_modal = null
+        // show typesmodal when clicking on the dropdown button next to the type
+        $('#plantable').on("click", "#typebtndropdown", function () {
+            console.log("clicked")
+            $('#typesModal').modal('show')
+            row_for_modal = $(this).closest("tr")
+        })
+
+        $('#typesModal').on("click", "#typeOKModal", function () {
+            // get the radio button that was selected in the modal
+            var selected_type = $('input[type="radio"]:checked').next().text().trim()
+            $('#typesModal').modal('hide')
+            
+            // set the type in the row
+            row_for_modal.find('td').eq(1).find('input').eq(0).val(selected_type)
+
+            updateStats();
+
+        })
+
+        // do the same for the catsModal
+        $('#plantable').on("click", "#catbtndropdown", function () {
+            console.log("clicked")
+            $('#catsModal').modal('show')
+            row_for_modal = $(this).closest("tr")
+        })
+
+        $('#catsModal').on("click", "#catOKModal", function () {
+            // get the radio button that was selected in the modal
+            var selected_cat = $('input[type="radio"]:checked').next().text().trim()
+            $('#catsModal').modal('hide')
+            
+            // set the type in the row
+            row_for_modal.find('td').eq(1).find('input').eq(1).val(selected_cat)
+
+            updateStats();
+
+        })
+
+        // do the same for the namesModal
+        $('#plantable').on("click", "#namebtndropdown", function () {
+            console.log("clicked")
+            $('#namesModal').modal('show')
+            row_for_modal = $(this).closest("tr")
+        })
+
+        $('#namesModal').on("click", "#nameOKModal", function () {
+            // get the radio button that was selected in the modal
+            var selected_name = $('input[type="radio"]:checked').next().text().trim()
+            $('#namesModal').modal('hide')
+            
+            // set the type in the row
+            row_for_modal.find('td').eq(1).find('input').eq(2).val(selected_name)
+
+            updateStats();
+
+        })
+        var card_for_modal = null
+        // do the same for the posModal
+        $('#plantable').on("click", "#posbtndropdown", function () {
+            console.log("clicked")
+            $('#posModal').modal('show')
+            row_for_modal = $(this).closest("tr")
+            card_for_modal = $(this).parent().parent().children().eq(0)
+        })
+
+        $('#posModal').on("click", "#posOKModal", function () {
+            // get the radio button that was selected in the modal
+            var selected_pos = $('input[type="radio"]:checked').next().text().trim()
+            $('#posModal').modal('hide')
+            
+            console.log(card_for_modal)
+
+            // set the type in the row
+            card_for_modal.val(selected_pos)
+
+            updateStats();
+
+        })
+
+        $('#plantable').on("click", "#deletepos", function () {
+                $('[data-bs-toggle="tooltip"]').tooltip("hide");
+                $(this).closest('tr').find('td').eq(1).children().children().find('.card').last().parent().remove()
+        })
+
+
+        $('#plantable').on("click", "#addpos", function () {
+            $('[data-bs-toggle="tooltip"]').tooltip("hide");
+            $(`<div class="col-md-auto">
+                <div class="card" style="width: 13rem;">
+                    <div class="input-group">
+
+                        <input value="" type="text" class="form-control" id="posSelect" name="posSelect" placeholder="Position">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary" type="button" id="posbtndropdown">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                {{!-- <ul class="dropdown-menu dropdown-menu-end">
+                                    <li> <a class="dropdown-item" >Pitching</a></li>
+                                    <li> <a class="dropdown-item" >Hitting</a></li>
+                                    <li> <a class="dropdown-item" >Catching</a></li>
+                                    <li> <a class="dropdown-item" >Throwing</a></li>
+                                    <li> <a class="dropdown-item" >Baserunning</a></li>
+                                    <li> <a class="dropdown-item" >Fielding</a></li>
+                                    <li> <a class="dropdown-item" >Conditioning</a></li>
+                                </ul> --}}
+                            </div>
+
+
+                    </div>
+                    <div class="row g-0">
+                        <div class="col" style="height:125px; overflow: scroll">
+                            <div id="playerList" name="playerList">
+                                {{#each player_array}}
+                                <div class="form-check" style="margin-left: 5px">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="margin-top: 10px;">
+                                        <label class="form-check-label" for="flexCheckDefault" style="margin-top: 8px">
+                                            {{this.p_name}}
+                                        </label>
+                                </div>
+                                {{/each}}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                                </div > `).insertBefore($(this).closest('tr').find('#addpos').parent())
+        })
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
